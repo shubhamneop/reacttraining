@@ -6,6 +6,7 @@ import Carousel from "./Carousel";
 import Signup from "./Signup";
 import Login from "./Login";
 import { useState } from "react";
+import Search from "./Search";
 
 function App() {
   const [user, setUser] = useState({});
@@ -18,9 +19,10 @@ function App() {
   return (
     <div className="App">
       <Navbar logintatstus={logintatstus} user={user} />
+      <Signup />
+      <Search />
       <Home />
       <Login informlogin={LoginDone} />
-      <Signup />
     </div>
   );
 }

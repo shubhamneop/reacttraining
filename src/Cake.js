@@ -5,7 +5,7 @@ function Cake({ name, img, cakedata, getDetails }) {
   return (
     <div
       class="card col-md-2"
-      onClick={() => getDetails(cakedata)}
+      onClick={() => getDetails && getDetails(cakedata)}
       style={{ width: "18rem", cursor: "pointer" }}
     >
       <img

@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import axios from "axios";
 
 function Login(props) {
   const [email, setEmail] = useState("");
@@ -15,11 +16,20 @@ function Login(props) {
   };
 
   const submit = () => {
-    if (user.email == "test@gmail.com" && user.password == "test") {
-      setError("Login success");
-      props.informlogin(user);
-    } else {
+    if (!user.email || !user.password) {
       setError("Email & password required");
+    } else {
+      let apiurl = "https://apibyashu.herokuapp.com/api/login";
+      axios({
+        url: apiurl,
+        method: "post",
+        data: user,
+      })
+        .then((response) => {
+          console.log("login success", response.data);
+        })
+        .catch((error) => console.log(error));
+      props.informlogin(user);
     }
   };
   return (
@@ -28,13 +38,11 @@ function Login(props) {
       <div className="form-group">
         <label>Email</label>
         <input type="email" className="form-control" onChange={getEmail} />
-        {user?.email}
       </div>
       <div className="form-group">
         <label>Password</label>
-        <input type="email" className="form-control" onChange={getPass} />
+        <input type="password" className="form-control" onChange={getPass} />
         <span style={{ color: "red" }}></span>
-        {user?.password}
       </div>
       <button className="btn btn-primary" onClick={submit}>
         Go Online

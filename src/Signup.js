@@ -1,5 +1,5 @@
 import React from "react";
-import { render } from "react-dom";
+import axios from "axios";
 
 class Signup extends React.Component {
   constructor() {
@@ -8,13 +8,14 @@ class Signup extends React.Component {
       onlineuser: 0,
       email: "",
       emailValid: false,
-      emailErr: "Email is required",
+      emailErr: "",
       password: "",
       passValid: false,
       passErr: "Password is required",
     };
     // alert("in construction");
   }
+  user = {};
 
   // componentDidMount() {
   //   alert("mounted");
@@ -30,18 +31,30 @@ class Signup extends React.Component {
     this.setState({ onlineuser: this.state.onlineuser + 1 });
   };
   getEmail = (event) => {
-    this.setState({ email: event.target.value });
+    this.user.email = event.target.value;
   };
   getPass = (event) => {
-    this.setState({ password: event.target.value });
+    this.user.password = event.target.value;
+  };
+  getName = (event) => {
+    this.user.name = event.target.value;
   };
   submit = () => {
-    if (this.state.email == "") {
-      this.setState({ emailValid: true });
+    if (!this.user.email || !this.user.password || !this.user.name) {
+      this.setState({ errorMessage: "Please fill details" });
+    } else {
+      let apiurl = "https://apibyashu.herokuapp.com/api/register";
+      axios({
+        url: apiurl,
+        method: "post",
+        data: this.user,
+      })
+        .then((response) => {
+          console.log("register", response.data);
+        })
+        .catch((error) => console.log(error));
     }
-    if (this.state.password == "") {
-      this.setState({ passValid: true });
-    }
+    console.log("user", this.user);
   };
   render() {
     return (
@@ -54,21 +67,21 @@ class Signup extends React.Component {
             className="form-control"
             onChange={this.getEmail}
           />
-          <span style={{ color: "red" }}>
-            {" "}
-            {this.state.emailValid && this.state.emailErr}
-          </span>
+          <span style={{ color: "red" }}> </span>
+        </div>
+        <div className="form-group">
+          <label>Name</label>
+          <input type="text" className="form-control" onChange={this.getName} />
+          <span style={{ color: "red" }}> </span>
         </div>
         <div className="form-group">
           <label>Password</label>
           <input
-            type="email"
+            type="password"
             className="form-control"
             onChange={this.getPass}
           />
-          <span style={{ color: "red" }}>
-            {this.state.passValid && this.state.passErr}
-          </span>
+          <span style={{ color: "red" }}>{this.state.errorMessage}</span>
         </div>
 
         <button className="btn btn-primary" onClick={this.submit}>
