@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import Cake from "./Cake";
 import CakeDetails from "./CakeDetails";
+import Carousel from "./Carousel";
 
 function Search(props) {
   const [cakes, setCakes] = useState([]);
@@ -12,9 +13,9 @@ function Search(props) {
   const token = query.get("q");
 
   useEffect(() => {
-    let apiurl = `https://apibyashu.herokuapp.com/api/searchcakes?q=${token}`;
+    let searchCakeApi = `https://apibyashu.herokuapp.com/api/searchcakes?q=${token}`;
     axios({
-      url: apiurl,
+      url: searchCakeApi,
       method: "get",
     })
       .then((response) => {
@@ -22,15 +23,16 @@ function Search(props) {
         setCakes(response.data.data);
       })
       .catch((error) => console.log(error));
-  }, []);
+  }, [props]);
   let searchData = () => {};
   const getDetails = (data) => {
     setGetCake(data);
   };
   return (
     <>
+      <Carousel />
       {getCake && <CakeDetails cakedata={getCake} />}
-      <div className="container">
+      <div className="" style={{ padding: "30px" }}>
         <div className="row">
           {cakes?.length > 0 ? (
             cakes.map((each, index) => {

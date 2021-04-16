@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Clock from "./Clock";
 import { Link, withRouter } from "react-router-dom";
+import PermIdentityIcon from "@material-ui/icons/PermIdentity";
 
 function Navbar(props) {
   const [searchData, setSearchData] = useState("");
@@ -9,22 +10,25 @@ function Navbar(props) {
     event.preventDefault();
     props.history.push(`/search?q=${searchData}`);
   };
-  var count = 0;
 
-  const increment = () => {
-    count = count + 1;
-    console.log("in increment", count);
+  const enterPressed = (event) => {
+    var code = event.keyCode || event.which;
+    if (code === 13) {
+      props.history.push(`/search?q=${searchData}`);
+    }
   };
-  const decrement = () => {
-    count = count--;
-    console.log("in dccrement", count);
+
+  const makeLogout = (event) => {
+    props.logout(event);
+    props.history.push("/");
   };
+
   return (
     <div>
       <nav className="navbar navbar-expand-lg navbar-light bg-light">
         <Link to="/">
           {" "}
-          <a className="navbar-brand">My Cake</a>
+          <a className="navbar-brand">Cake`s Shop</a>
         </Link>
         <button
           className="navbar-toggler"
@@ -66,23 +70,19 @@ function Navbar(props) {
               </div>
             </li> */}
             <li className="nav-item">
-              <a
-                className="nav-link disabled"
-                href="#"
-                tabindex="-1"
-                aria-disabled="true"
-              >
-                Disabled
+              <a className="nav-link" tabindex="-1" aria-disabled="true">
+                {localStorage?.name && <PermIdentityIcon />}{" "}
+                {localStorage?.name || ""}
               </a>
             </li>
           </ul>
           <div className="form-inline my-2 my-lg-0">
-            <label
+            {/* <label
               className="btn btn-outline-danger my-2 my-sm-0 disabled"
               style={{ marginRight: "5px" }}
             >
               <Clock />
-            </label>
+            </label> */}
 
             <input
               className="form-control mr-sm-2"
@@ -90,6 +90,8 @@ function Navbar(props) {
               placeholder="Search"
               aria-label="Search"
               onChange={(event) => setSearchData(event.target.value)}
+              value={searchData}
+              onKeyPress={enterPressed}
             />
             <button
               className="btn btn-outline-success my-2 my-sm-0"
@@ -98,7 +100,10 @@ function Navbar(props) {
               Search
             </button>
             {props.logintatstus ? (
-              <button className="btn btn-outline-danger my-2 my-sm-0">
+              <button
+                onClick={makeLogout}
+                className="btn btn-outline-danger my-2 my-sm-0"
+              >
                 Logout
               </button>
             ) : (

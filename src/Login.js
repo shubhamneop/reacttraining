@@ -3,7 +3,6 @@ import axios from "axios";
 import { Link, withRouter } from "react-router-dom";
 
 function Login(props) {
-  console.log("login props", props);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState();
@@ -37,6 +36,8 @@ function Login(props) {
           if (response.data.token) {
             localStorage.token = response.data.token;
             localStorage.email = response.data.email;
+            localStorage.name = response.data.name;
+            props.loginDone(user);
             props.history.push("/");
           } else {
             alert("Invalid Credentional");

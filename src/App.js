@@ -16,22 +16,37 @@ import {
 } from "react-router-dom";
 import CakeDetails from "./CakeDetails";
 
-function App() {
+function App(props) {
   const [user, setUser] = useState({});
   const [logintatstus, setlogintatstus] = useState(false);
-
   useEffect(() => {
+    document.title = `Cake Shop | ${localStorage?.name || "App"}`;
+
     if (localStorage.token && localStorage.email) {
       setlogintatstus(true);
     }
-  }, []);
+  }, [logintatstus]);
+
+  const logout = (event) => {
+    event.preventDefault();
+    localStorage.clear();
+    if (!localStorage.token && !localStorage.email) {
+      setlogintatstus(false);
+      //props.history.push("/login");
+    }
+  };
+
+  const loginDone = (data) => {
+    setUser(data);
+    setlogintatstus(true);
+  };
 
   return (
     <Router>
-      <Navbar logintatstus={logintatstus} />
+      <Navbar logintatstus={logintatstus} logout={logout} />
       <Switch>
         <Route path="/login" exact>
-          <Login />
+          <Login loginDone={loginDone} />
         </Route>
 
         <Route path="/signup" exact component={Signup} />

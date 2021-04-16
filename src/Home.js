@@ -27,7 +27,7 @@ function Home() {
   return (
     <>
       <Carousel />
-      <div className="row">
+      <div className="row" style={{ padding: "20px" }}>
         {cakes?.length > 0 &&
           cakes.map((each, index) => {
             return <Cake cakedata={each} key={index} />;
