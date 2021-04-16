@@ -85,7 +85,7 @@ class Signup extends React.Component {
         </div>
 
         <button className="btn btn-primary" onClick={this.submit}>
-          Go Online
+          Signup
         </button>
       </div>
     );

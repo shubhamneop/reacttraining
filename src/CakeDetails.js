@@ -1,6 +1,24 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
+import { useParams } from "react-router";
+import axios from "axios";
+var cake = "/product17.jpg";
 
-function CakeDetails({ cakedata }) {
+function CakeDetails() {
+  let params = useParams();
+  console.log(params.cakeid);
+  const [cakedata, setCakes] = useState();
+  useEffect(() => {
+    let apiurl = "https://apibyashu.herokuapp.com/api/cake/" + params.cakeid;
+    axios({
+      url: apiurl,
+      method: "get",
+    })
+      .then((response) => {
+        console.log("all cake", response.data.data);
+        setCakes(response.data.data);
+      })
+      .catch((error) => console.log(error));
+  }, []);
   return (
     <div>
       <div
@@ -12,7 +30,10 @@ function CakeDetails({ cakedata }) {
         }}
       >
         <div className="col-md-6">
-          <img style={{ height: "100%" }} src={cakedata.image} />
+          <img
+            style={{ height: "700px", maxWidth: "700px" }}
+            src={cakedata?.image || cake}
+          />
         </div>
         <div className="col-md-6">
           <h2 style={{ fontSize: "55px", fontWeight: "900" }}>
@@ -20,8 +41,9 @@ function CakeDetails({ cakedata }) {
           </h2>
 
           <br></br>
-          <p>30 Reviews</p>
-          <p style={{ wordBreak: "break-all" }}>Test descriptiond.........</p>
+          <p>{cakedata?.ratings} *</p>
+          <p>{cakedata?.reviews} Reviews</p>
+          <p style={{ wordBreak: "break-all" }}>{cakedata?.description}</p>
           <h2>
             CURRENT PRICE:{" "}
             <span style={{ color: "orange" }}>$ {cakedata?.price}</span>
@@ -29,19 +51,14 @@ function CakeDetails({ cakedata }) {
           <p style={{ wordBreak: "break-all" }}>
             ************************************
           </p>
-          <h3>WEIGHT: 3KG</h3>
+          <h3>WEIGHT: {cakedata?.weight}</h3>
           <h2>
             FLAVOUR:{" "}
             <span style={{ color: "orange" }}>
               {cakedata?.flavour || "dumy"}
             </span>
           </h2>
-          <h3>TYPE</h3>
-          <ul style={{ listStyleType: "none" }}>
-            <li>Tets1</li>
-            <li>Tets1</li>
-            <li>Tets1</li>
-          </ul>
+          <h3>TYPE : {cakedata?.type}</h3>
         </div>
       </div>
     </div>

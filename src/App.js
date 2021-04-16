@@ -7,23 +7,35 @@ import Signup from "./Signup";
 import Login from "./Login";
 import { useState } from "react";
 import Search from "./Search";
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route,
+  Link,
+  Redirect,
+} from "react-router-dom";
+import CakeDetails from "./CakeDetails";
 
 function App() {
   const [user, setUser] = useState({});
   const [logintatstus, setlogintatstus] = useState(false);
-  function LoginDone(data) {
-    setUser(data);
-    setlogintatstus(true);
-    alert("In app nlogin");
-  }
+
   return (
-    <div className="App">
-      <Navbar logintatstus={logintatstus} user={user} />
-      <Signup />
-      <Search />
-      <Home />
-      <Login informlogin={LoginDone} />
-    </div>
+    <Router>
+      <Navbar />
+      <Switch>
+        <Route path="/login" exact component={Login} />
+
+        <Route path="/signup" exact component={Signup} />
+
+        <Route path="/" exact component={Home} />
+        <Route path="/search" exact component={Search} />
+        <Route path="/cake/:cakeid" exact component={CakeDetails} />
+        <Route path="/*">
+          <Redirect to="/" />
+        </Route>
+      </Switch>
+    </Router>
   );
 }
 

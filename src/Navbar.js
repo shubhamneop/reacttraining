@@ -1,5 +1,6 @@
 import React from "react";
 import Clock from "./Clock";
+import { Link } from "react-router-dom";
 
 function Navbar(props) {
   const serach = (event) => {
@@ -19,9 +20,10 @@ function Navbar(props) {
   return (
     <div>
       <nav className="navbar navbar-expand-lg navbar-light bg-light">
-        <a className="navbar-brand" href="#">
-          Navbar
-        </a>
+        <Link to="/">
+          {" "}
+          <a className="navbar-brand">My Cake</a>
+        </Link>
         <button
           className="navbar-toggler"
           type="button"
@@ -36,18 +38,7 @@ function Navbar(props) {
 
         <div className="collapse navbar-collapse" id="navbarSupportedContent">
           <ul className="navbar-nav mr-auto">
-            <li className="nav-item active">
-              <a className="nav-link" href="#">
-                Home <span className="sr-only">(current)</span>
-              </a>
-            </li>
-            <li className="nav-item">
-              <a className="nav-link" href="#">
-                Link
-              </a>
-            </li>
-            {props.user.email}
-            <li className="nav-item dropdown">
+            {/* <li className="nav-item dropdown">
               <a
                 className="nav-link dropdown-toggle"
                 href="#"
@@ -71,7 +62,7 @@ function Navbar(props) {
                   Something else here
                 </a>
               </div>
-            </li>
+            </li> */}
             <li className="nav-item">
               <a
                 className="nav-link disabled"
@@ -109,9 +100,12 @@ function Navbar(props) {
                 Logout
               </button>
             ) : (
-              <button className="btn btn-outline-primary my-2 my-sm-0">
-                Login
-              </button>
+              <Link to="/login">
+                {" "}
+                <button className="btn btn-outline-primary my-2 my-sm-0">
+                  Login
+                </button>
+              </Link>
             )}
           </form>
         </div>
