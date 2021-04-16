@@ -1,11 +1,13 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Clock from "./Clock";
-import { Link } from "react-router-dom";
+import { Link, withRouter } from "react-router-dom";
 
 function Navbar(props) {
+  const [searchData, setSearchData] = useState("");
+
   const serach = (event) => {
     event.preventDefault();
-    alert("Search function");
+    props.history.push(`/search?q=${searchData}`);
   };
   var count = 0;
 
@@ -74,7 +76,7 @@ function Navbar(props) {
               </a>
             </li>
           </ul>
-          <form className="form-inline my-2 my-lg-0">
+          <div className="form-inline my-2 my-lg-0">
             <label
               className="btn btn-outline-danger my-2 my-sm-0 disabled"
               style={{ marginRight: "5px" }}
@@ -87,10 +89,10 @@ function Navbar(props) {
               type="search"
               placeholder="Search"
               aria-label="Search"
+              onChange={(event) => setSearchData(event.target.value)}
             />
             <button
               className="btn btn-outline-success my-2 my-sm-0"
-              type="submit"
               onClick={serach}
             >
               Search
@@ -107,11 +109,11 @@ function Navbar(props) {
                 </button>
               </Link>
             )}
-          </form>
+          </div>
         </div>
       </nav>
     </div>
   );
 }
 
-export default Navbar;
+export default withRouter(Navbar);

@@ -3,14 +3,16 @@ import axios from "axios";
 import Cake from "./Cake";
 import CakeDetails from "./CakeDetails";
 
-function Search() {
+function Search(props) {
   const [cakes, setCakes] = useState([]);
   const [search, setSearch] = useState("");
   const [getCake, setGetCake] = useState();
+  console.log(props.location.search);
+  const query = new URLSearchParams(props.location.search);
+  const token = query.get("q");
 
-  useEffect(() => {}, []);
-  let searchData = () => {
-    let apiurl = `https://apibyashu.herokuapp.com/api/searchcakes?q=${search}`;
+  useEffect(() => {
+    let apiurl = `https://apibyashu.herokuapp.com/api/searchcakes?q=${token}`;
     axios({
       url: apiurl,
       method: "get",
@@ -20,28 +22,13 @@ function Search() {
         setCakes(response.data.data);
       })
       .catch((error) => console.log(error));
-  };
+  }, []);
+  let searchData = () => {};
   const getDetails = (data) => {
     setGetCake(data);
   };
   return (
     <>
-      <div style={{ width: "50%", margin: "auto" }}>
-        <span style={{ color: "red" }}> </span>
-        <div className="form-group">
-          <label>Search</label>
-          <input
-            type="text"
-            className="form-control"
-            onChange={(event) => setSearch(event.target.value)}
-          />
-        </div>
-
-        <button className="btn btn-primary" onClick={searchData}>
-          Search
-        </button>
-      </div>
-      <div>Search Result</div>
       {getCake && <CakeDetails cakedata={getCake} />}
       <div className="container">
         <div className="row">

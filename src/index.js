@@ -3,8 +3,8 @@ import ReactDOM from "react-dom";
 import "./index.css";
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
-import "jquery/dist/jquery.slim";
-import "bootstrap/dist/js/bootstrap.bundle";
+import "jquery/dist/jquery.slim.min";
+import "bootstrap/dist/js/bootstrap.bundle.min";
 import "bootstrap/dist/css/bootstrap.min.css";
 
 ReactDOM.render(

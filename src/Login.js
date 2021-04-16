@@ -1,8 +1,9 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { Link } from "react-router-dom";
+import { Link, withRouter } from "react-router-dom";
 
 function Login(props) {
+  console.log("login props", props);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState();
@@ -15,6 +16,11 @@ function Login(props) {
   let getPass = (event) => {
     setUser({ ...user, password: event.target.value });
   };
+  useEffect(() => {
+    if (localStorage.token && localStorage.email) {
+      props.history.push("/");
+    }
+  }, []);
 
   const submit = () => {
     if (!user.email || !user.password) {
@@ -28,9 +34,15 @@ function Login(props) {
       })
         .then((response) => {
           console.log("login success", response.data);
+          if (response.data.token) {
+            localStorage.token = response.data.token;
+            localStorage.email = response.data.email;
+            props.history.push("/");
+          } else {
+            alert("Invalid Credentional");
+          }
         })
         .catch((error) => console.log(error));
-      props.informlogin(user);
     }
   };
   return (
@@ -56,4 +68,4 @@ function Login(props) {
   );
 }
 
-export default Login;
+export default withRouter(Login);
