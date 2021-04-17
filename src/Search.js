@@ -23,7 +23,7 @@ function Search(props) {
         setCakes(response.data.data);
       })
       .catch((error) => console.log(error));
-  }, [props]);
+  }, [props.location.search]);
   let searchData = () => {};
   const getDetails = (data) => {
     setGetCake(data);
