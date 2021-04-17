@@ -7,6 +7,7 @@ import Signup from "./Signup";
 import Login from "./Login";
 import { useState, useEffect } from "react";
 import Search from "./Search";
+import axios from "axios";
 import {
   BrowserRouter as Router,
   Switch,
@@ -15,38 +16,37 @@ import {
   Redirect,
 } from "react-router-dom";
 import CakeDetails from "./CakeDetails";
+import { connect } from "react-redux";
+import Cart from "./Cart";
 
 function App(props) {
-  const [user, setUser] = useState({});
-  const [logintatstus, setlogintatstus] = useState(false);
   useEffect(() => {
-    document.title = `Cake Shop | ${localStorage?.name || "App"}`;
+    document.title = `Cake Shop | ${props.user?.name || "App"}`;
 
-    if (localStorage.token && localStorage.email) {
-      setlogintatstus(true);
+    if (localStorage.token && !props.user) {
+      var token = localStorage.token;
+      let getuserapi = "https://apibyashu.herokuapp.com/api/getuserdetails";
+      axios({
+        url: getuserapi,
+        method: "get",
+        headers: {
+          authtoken: token,
+        },
+      })
+        .then((response) => {
+          console.log("get user response", response.data);
+          props.dispatch({ type: "INIT_USER", payload: response.data.data });
+        })
+        .catch((error) => console.log(error));
     }
-  }, [logintatstus]);
-
-  const logout = (event) => {
-    event.preventDefault();
-    localStorage.clear();
-    if (!localStorage.token && !localStorage.email) {
-      setlogintatstus(false);
-      //props.history.push("/login");
-    }
-  };
-
-  const loginDone = (data) => {
-    setUser(data);
-    setlogintatstus(true);
-  };
+  }, [props.user]);
 
   return (
     <Router>
-      <Navbar logintatstus={logintatstus} logout={logout} />
+      <Navbar />
       <Switch>
         <Route path="/login" exact>
-          <Login loginDone={loginDone} />
+          <Login />
         </Route>
 
         <Route path="/signup" exact component={Signup} />
@@ -54,6 +54,7 @@ function App(props) {
         <Route path="/" exact component={Home} />
         <Route path="/search" exact component={Search} />
         <Route path="/cake/:cakeid" exact component={CakeDetails} />
+        <Route path="/cart" exact component={Cart} />
         <Route path="/*">
           <Redirect to="/" />
         </Route>
@@ -62,4 +63,8 @@ function App(props) {
   );
 }
 
-export default App;
+export default connect(function (state, props) {
+  return {
+    user: state?.user,
+  };
+})(App);

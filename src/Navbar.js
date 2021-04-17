@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import Clock from "./Clock";
 import { Link, withRouter } from "react-router-dom";
 import PermIdentityIcon from "@material-ui/icons/PermIdentity";
+import { connect } from "react-redux";
+import ShoppingCartIcon from "@material-ui/icons/ShoppingCart";
 
 function Navbar(props) {
   const [searchData, setSearchData] = useState("");
@@ -19,7 +21,8 @@ function Navbar(props) {
   };
 
   const makeLogout = (event) => {
-    props.logout(event);
+    event.preventDefault();
+    props.dispatch({ type: "LOGOUT" });
     props.history.push("/");
   };
 
@@ -71,8 +74,7 @@ function Navbar(props) {
             </li> */}
             <li className="nav-item">
               <a className="nav-link" tabindex="-1" aria-disabled="true">
-                {localStorage?.name && <PermIdentityIcon />}{" "}
-                {localStorage?.name || ""}
+                {props.username && <PermIdentityIcon />} {props.username || ""}
               </a>
             </li>
           </ul>
@@ -94,15 +96,25 @@ function Navbar(props) {
               onKeyPress={enterPressed}
             />
             <button
-              className="btn btn-outline-success my-2 my-sm-0"
+              className="btn btn-outline-success my-2 mr-sm-2 my-sm-0"
               onClick={serach}
             >
               Search
             </button>
+            <Link to="/cart">
+              {" "}
+              <button
+                className="btn btn-warning mr-sm-2"
+                tabindex="-1"
+                aria-disabled="true"
+              >
+                <ShoppingCartIcon />
+              </button>
+            </Link>
             {props.logintatstus ? (
               <button
                 onClick={makeLogout}
-                className="btn btn-outline-danger my-2 my-sm-0"
+                className="btn btn-outline-danger my-2 mr-sm-2 my-sm-0"
               >
                 Logout
               </button>
@@ -121,4 +133,10 @@ function Navbar(props) {
   );
 }
 
-export default withRouter(Navbar);
+export default connect(function (state, props) {
+  console.log("state store data", state);
+  return {
+    username: state?.user?.name,
+    logintatstus: state?.isLogin,
+  };
+})(withRouter(Navbar));

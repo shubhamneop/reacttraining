@@ -4,9 +4,11 @@ import axios from "axios";
 import StarOutlineIcon from "@material-ui/icons/StarOutline";
 import RateReviewIcon from "@material-ui/icons/RateReview";
 import FavoriteIcon from "@material-ui/icons/Favorite";
+import Cart from "./Cart";
+import { connect } from "react-redux";
 var cake = "/product17.jpg";
 
-function CakeDetails() {
+function CakeDetails(props) {
   let params = useParams();
   console.log(params.cakeid);
   const [cakedata, setCakes] = useState();
@@ -23,6 +25,33 @@ function CakeDetails() {
       })
       .catch((error) => console.log(error));
   }, []);
+
+  const addToCart = () => {
+    if (!props?.token) {
+      alert("Please Login !");
+      return false;
+    }
+    let detailsapiurl = "https://apibyashu.herokuapp.com/api/addcaketocart";
+    axios({
+      url: detailsapiurl,
+      method: "post",
+      data: {
+        cakeid: cakedata.cakeid,
+        name: cakedata.name,
+        image: cakedata.image,
+        price: cakedata.price,
+        weight: cakedata.weight,
+      },
+      headers: {
+        authtoken: props.token,
+      },
+    })
+      .then((response) => {
+        console.log("add to cart", response);
+        props.history.push("/cart");
+      })
+      .catch((error) => console.log(error));
+  };
   return (
     <div>
       <div
@@ -86,8 +115,12 @@ function CakeDetails() {
 
           <br></br>
           <div style={{ display: "flex" }}>
-            <button type="button" class="btn btn-warning btn-lg">
-              Buy Now!
+            <button
+              onClick={addToCart}
+              type="button"
+              class="btn btn-warning btn-lg"
+            >
+              Add To Cart!
             </button>
             <div style={{ padding: "10px" }} />
             <button type="button" class="btn btn-outline-light btn-lg">
@@ -100,4 +133,8 @@ function CakeDetails() {
   );
 }
 
-export default CakeDetails;
+export default connect(function (state, props) {
+  return {
+    token: state?.user?.token,
+  };
+})(CakeDetails);

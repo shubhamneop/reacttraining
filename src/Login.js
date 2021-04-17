@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { Link, withRouter } from "react-router-dom";
+import { connect } from "react-redux";
 
 function Login(props) {
   const [email, setEmail] = useState("");
@@ -16,7 +17,7 @@ function Login(props) {
     setUser({ ...user, password: event.target.value });
   };
   useEffect(() => {
-    if (localStorage.token && localStorage.email) {
+    if (localStorage.token) {
       props.history.push("/");
     }
   }, []);
@@ -35,9 +36,10 @@ function Login(props) {
           console.log("login success", response.data);
           if (response.data.token) {
             localStorage.token = response.data.token;
-            localStorage.email = response.data.email;
-            localStorage.name = response.data.name;
-            props.loginDone(user);
+            props.dispatch({
+              type: "LOGIN",
+              payload: response.data,
+            });
             props.history.push("/");
           } else {
             alert("Invalid Credentional");
@@ -69,4 +71,4 @@ function Login(props) {
   );
 }
 
-export default withRouter(Login);
+export default connect()(withRouter(Login));
