@@ -3,16 +3,13 @@ import { connect } from "react-redux";
 import axios from "axios";
 import ShoppingCartIcon from "@material-ui/icons/ShoppingCart";
 import MoodIcon from "@material-ui/icons/Mood";
+import { Link } from "react-router-dom";
+import Spinner from "./UI/Spinner";
 
 function Cart(props) {
-  ///addcaketocart
-  //post
-  //data: - cakeid,name,image,price,weight
-  ///cakecart
-  //{}
-  const [cartData, setCartData] = useState([]);
-  const [totalPrice, setTotalPrice] = useState(0);
+  const [loading, setLoading] = useState(false);
   useEffect(() => {
+    setLoading(true);
     let detailsapiurl = "https://apibyashu.herokuapp.com/api/cakecart";
     axios({
       url: detailsapiurl,
@@ -23,16 +20,54 @@ function Cart(props) {
       },
     })
       .then((response) => {
-        console.log("cart data", response.data);
-        setCartData(response.data.data);
+        //setCartData(response.data.data);
         var total = 0;
         response.data.data.map(({ price }) => {
           total = total + price;
         });
-        setTotalPrice(total);
+        props.dispatch({
+          type: "CART_DATA",
+          payload: response.data.data,
+          total: total,
+        });
+        setLoading(false);
       })
-      .catch((error) => console.log(error));
+      .catch((error) => {
+        console.log(error);
+        setLoading(false);
+      });
   }, [props.token]);
+
+  const removeCart = (id, price) => {
+    setLoading(true);
+    let detailsapiurl =
+      "https://apibyashu.herokuapp.com/api/removecakefromcart";
+    axios({
+      url: detailsapiurl,
+      method: "post",
+      data: { cakeid: id },
+      headers: {
+        authtoken: props.token,
+      },
+    })
+      .then((response) => {
+        console.log("remove cake data", response.data);
+        props.dispatch({
+          type: "REMOVE_CART_DATA",
+          payload: id,
+          price: price,
+        });
+        setLoading(false);
+
+        console.log("after remove cake data", props.cart);
+
+        //setCartData(response.data.data);
+      })
+      .catch((error) => {
+        setLoading(false);
+        console.log(error);
+      });
+  };
   return (
     <div>
       <h1
@@ -48,13 +83,15 @@ function Cart(props) {
         Shopping Cart <ShoppingCartIcon style={{ fontSize: "40px" }} />
       </h1>
       <div className="row" style={{ padding: "10px" }}>
-        {cartData?.length > 0 ? (
+        {loading ? (
+          <Spinner />
+        ) : props.cartData?.length > 0 ? (
           <>
             <div className="col-sm-8 col-md-8 col-md-offset-1 container">
               <table className="table table-hover">
                 <tbody>
-                  {cartData?.length > 0 &&
-                    cartData.map((cart, index) => {
+                  {props.cartData?.length > 0 &&
+                    props.cartData.map((cart, index) => {
                       return (
                         <tr key={index}>
                           <td className="text-center">
@@ -75,7 +112,13 @@ function Cart(props) {
                             <strong>${cart.price}</strong>
                           </td>
                           <td className="text-center">
-                            <button type="button" className="btn btn-danger">
+                            <button
+                              onClick={() =>
+                                removeCart(cart?.cakeid, cart?.price)
+                              }
+                              type="button"
+                              className="btn btn-danger"
+                            >
                               <span className="glyphicon glyphicon-remove"></span>{" "}
                               Remove
                             </button>
@@ -96,18 +139,21 @@ function Cart(props) {
                 }}
               >
                 <p style={{ textAlign: "center" }}>
-                  Total Item <br /> {cartData?.length}
+                  Total Item <br /> {props.cartData?.length}
                 </p>
                 <p style={{ textAlign: "center" }}>
-                  Total Price <br />$ {totalPrice}
+                  Total Price <br />$ {props.cartTotal}
                 </p>
               </div>
-              <button
-                style={{ display: "flex", float: "right", margin: "100px" }}
-                className="btn btn-success"
-              >
-                Checkout
-              </button>
+              <Link to="/checkout">
+                {" "}
+                <button
+                  style={{ display: "flex", float: "right", margin: "100px" }}
+                  className="btn btn-success"
+                >
+                  Checkout
+                </button>
+              </Link>
             </div>
           </>
         ) : (
@@ -135,5 +181,7 @@ function Cart(props) {
 export default connect(function (state, props) {
   return {
     token: state?.user?.token,
+    cartData: state?.cart,
+    cartTotal: state?.total,
   };
 })(Cart);

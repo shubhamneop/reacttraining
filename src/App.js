@@ -18,13 +18,14 @@ import {
 import CakeDetails from "./CakeDetails";
 import { connect } from "react-redux";
 import Cart from "./Cart";
+import Checkout from "./Checkout";
 
 function App(props) {
   useEffect(() => {
     document.title = `Cake Shop | ${props.user?.name || "App"}`;
+    var token = localStorage.token;
 
     if (localStorage.token && !props.user) {
-      var token = localStorage.token;
       let getuserapi = "https://apibyashu.herokuapp.com/api/getuserdetails";
       axios({
         url: getuserapi,
@@ -39,7 +40,29 @@ function App(props) {
         })
         .catch((error) => console.log(error));
     }
-  }, [props.user]);
+
+    let detailsapiurl = "https://apibyashu.herokuapp.com/api/cakecart";
+    axios({
+      url: detailsapiurl,
+      method: "post",
+      data: {},
+      headers: {
+        authtoken: token,
+      },
+    })
+      .then((response) => {
+        var total = 0;
+        response.data.data.map(({ price }) => {
+          total = total + price;
+        });
+        props.dispatch({
+          type: "CART_DATA",
+          payload: response.data.data,
+          total: total,
+        });
+      })
+      .catch((error) => console.log(error));
+  }, [props.token]);
 
   return (
     <Router>
@@ -55,6 +78,7 @@ function App(props) {
         <Route path="/search" exact component={Search} />
         <Route path="/cake/:cakeid" exact component={CakeDetails} />
         <Route path="/cart" exact component={Cart} />
+        <Route path="/checkout" component={Checkout} />
         <Route path="/*">
           <Redirect to="/" />
         </Route>
@@ -66,5 +90,6 @@ function App(props) {
 export default connect(function (state, props) {
   return {
     user: state?.user,
+    token: state?.user?.token,
   };
 })(App);

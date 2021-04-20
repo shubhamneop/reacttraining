@@ -1,5 +1,4 @@
-import React, { useEffect, useState } from "react";
-import Clock from "./Clock";
+import React, { useState } from "react";
 import { Link, withRouter } from "react-router-dom";
 import PermIdentityIcon from "@material-ui/icons/PermIdentity";
 import { connect } from "react-redux";
@@ -101,23 +100,26 @@ function Navbar(props) {
             >
               Search
             </button>
-            <Link to="/cart">
-              {" "}
-              <button
-                className="btn btn-warning mr-sm-2"
-                tabindex="-1"
-                aria-disabled="true"
-              >
-                <ShoppingCartIcon />
-              </button>
-            </Link>
             {props.logintatstus ? (
-              <button
-                onClick={makeLogout}
-                className="btn btn-outline-danger my-2 mr-sm-2 my-sm-0"
-              >
-                Logout
-              </button>
+              <>
+                <Link to="/cart">
+                  {" "}
+                  <button
+                    className="btn btn-warning mr-sm-2"
+                    tabindex="-1"
+                    aria-disabled="true"
+                  >
+                    <ShoppingCartIcon /> {props.cart?.length}
+                  </button>
+                </Link>
+
+                <button
+                  onClick={makeLogout}
+                  className="btn btn-outline-danger my-2 mr-sm-2 my-sm-0"
+                >
+                  Logout
+                </button>
+              </>
             ) : (
               <Link to="/login">
                 {" "}
@@ -134,9 +136,9 @@ function Navbar(props) {
 }
 
 export default connect(function (state, props) {
-  console.log("state store data", state);
   return {
     username: state?.user?.name,
     logintatstus: state?.isLogin,
+    cart: state?.cart,
   };
 })(withRouter(Navbar));
