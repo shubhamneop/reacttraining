@@ -145,7 +145,7 @@ function Cart(props) {
                 </p>
               </div>
               <Link to="/checkout" className="cart-btn">
-                <button className="btn btn-success">Checkout</button>
+                <button className="btn btn-outline-primary">Checkout</button>
               </Link>
             </div>
           </>

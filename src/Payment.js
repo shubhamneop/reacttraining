@@ -53,8 +53,8 @@ function Payment(props) {
         </div>
         <br></br>
         <div>
-          <button className="btn btn-primary" onClick={submit}>
-            Place Order
+          <button className="btn btn-outline-primary" onClick={submit}>
+            Confirm
           </button>
         </div>
       </div>

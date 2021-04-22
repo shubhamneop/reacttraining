@@ -45,7 +45,7 @@ export const CartSummery = (props) => {
         </tbody>
       </table>
       {props.stage == 1 && (
-        <button onClick={nextClick} className="btn btn-success">
+        <button onClick={nextClick} className="btn btn-outline-primary">
           Next
         </button>
       )}

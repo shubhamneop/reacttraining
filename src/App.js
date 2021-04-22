@@ -19,6 +19,7 @@ import CakeDetails from "./CakeDetails";
 import { connect } from "react-redux";
 import Cart from "./Cart";
 import Checkout from "./Checkout";
+import Password from "./Password";
 
 function App(props) {
   useEffect(() => {
@@ -79,6 +80,7 @@ function App(props) {
         <Route path="/cake/:cakeid" exact component={CakeDetails} />
         <Route path="/cart" exact component={Cart} />
         <Route path="/checkout" component={Checkout} />
+        <Route path="/forgot-password" exact component={Password} />
         <Route path="/*">
           <Redirect to="/" />
         </Route>

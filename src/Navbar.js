@@ -27,7 +27,7 @@ function Navbar(props) {
 
   return (
     <div>
-      <nav className="navbar navbar-expand-lg navbar-light bg-light">
+      <nav className="navbar navbar-expand-lg navbar-light  navbar-color">
         <Link to="/">
           {" "}
           <a className="navbar-brand">Cake`s Shop</a>
