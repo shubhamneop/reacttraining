@@ -3,6 +3,7 @@ import { Link, withRouter } from "react-router-dom";
 import PermIdentityIcon from "@material-ui/icons/PermIdentity";
 import { connect } from "react-redux";
 import ShoppingCartIcon from "@material-ui/icons/ShoppingCart";
+import { toast } from "react-toastify";
 
 function Navbar(props) {
   const [searchData, setSearchData] = useState("");
@@ -22,6 +23,9 @@ function Navbar(props) {
   const makeLogout = (event) => {
     event.preventDefault();
     props.dispatch({ type: "LOGOUT" });
+    toast.success(`Logout Successfully !`, {
+      position: toast.POSITION.TOP_RIGHT,
+    });
     props.history.push("/");
   };
 

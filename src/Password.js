@@ -3,6 +3,7 @@ import axios from "axios";
 import { Link, withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import Spinner from "./UI/Spinner";
+import { toast } from "react-toastify";
 
 function Password(props) {
   ///recoverpassword post {email:""}
@@ -56,7 +57,10 @@ function Password(props) {
         .then((response) => {
           console.log("forgot password response.. ", response.data);
           if (response.data.errorMessage) {
-            alert(response.data.errorMessage);
+            toast.error(`${response.data.errorMessage} !`, {
+              position: toast.POSITION.TOP_RIGHT,
+            });
+            //alert(response.data.errorMessage);
           }
           setLoading(false);
         })

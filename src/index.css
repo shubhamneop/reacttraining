@@ -76,3 +76,7 @@ code {
   color: #fff;
   background-color: #ff8100 !important;
 }
+
+.navbar-light .navbar-nav .nav-link {
+  color: #f8f9fa !important;
+}

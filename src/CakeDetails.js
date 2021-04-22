@@ -6,6 +6,7 @@ import RateReviewIcon from "@material-ui/icons/RateReview";
 import FavoriteIcon from "@material-ui/icons/Favorite";
 import { connect } from "react-redux";
 import Spinner from "./UI/Spinner";
+import { toast } from "react-toastify";
 var cake = "/product17.jpg";
 
 function CakeDetails(props) {
@@ -35,7 +36,11 @@ function CakeDetails(props) {
   const addToCart = () => {
     setLoading(true);
     if (!props?.token) {
-      alert("Please Login !");
+      toast.error("Please Login !", {
+        position: toast.POSITION.TOP_RIGHT,
+      });
+
+      //alert("Please Login !");
       setLoading(false);
       return false;
     }
@@ -58,6 +63,9 @@ function CakeDetails(props) {
         props.dispatch({
           type: "ADD_CART",
           payload: response.data.data,
+        });
+        toast.success("Cake Added in cart !", {
+          position: toast.POSITION.TOP_RIGHT,
         });
         props.history.push("/cart");
         setLoading(false);

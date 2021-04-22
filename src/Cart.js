@@ -5,6 +5,7 @@ import ShoppingCartIcon from "@material-ui/icons/ShoppingCart";
 import MoodIcon from "@material-ui/icons/Mood";
 import { Link } from "react-router-dom";
 import Spinner from "./UI/Spinner";
+import { toast } from "react-toastify";
 
 function Cart(props) {
   const [loading, setLoading] = useState(false);
@@ -58,6 +59,9 @@ function Cart(props) {
           price: price,
         });
         setLoading(false);
+        toast.success(`${response.data.message} !`, {
+          position: toast.POSITION.TOP_RIGHT,
+        });
 
         console.log("after remove cake data", props.cart);
 

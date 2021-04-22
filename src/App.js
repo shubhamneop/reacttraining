@@ -20,6 +20,7 @@ import { connect } from "react-redux";
 import Cart from "./Cart";
 import Checkout from "./Checkout";
 import Password from "./Password";
+import { ToastContainer } from "react-toastify";
 
 function App(props) {
   useEffect(() => {
@@ -66,26 +67,29 @@ function App(props) {
   }, [props.token]);
 
   return (
-    <Router>
-      <Navbar />
-      <Switch>
-        <Route path="/login" exact>
-          <Login />
-        </Route>
+    <>
+      <ToastContainer />
+      <Router>
+        <Navbar />
+        <Switch>
+          <Route path="/login" exact>
+            <Login />
+          </Route>
 
-        <Route path="/signup" exact component={Signup} />
+          <Route path="/signup" exact component={Signup} />
 
-        <Route path="/" exact component={Home} />
-        <Route path="/search" exact component={Search} />
-        <Route path="/cake/:cakeid" exact component={CakeDetails} />
-        <Route path="/cart" exact component={Cart} />
-        <Route path="/checkout" component={Checkout} />
-        <Route path="/forgot-password" exact component={Password} />
-        <Route path="/*">
-          <Redirect to="/" />
-        </Route>
-      </Switch>
-    </Router>
+          <Route path="/" exact component={Home} />
+          <Route path="/search" exact component={Search} />
+          <Route path="/cake/:cakeid" exact component={CakeDetails} />
+          <Route path="/cart" exact component={Cart} />
+          <Route path="/checkout" component={Checkout} />
+          <Route path="/forgot-password" exact component={Password} />
+          <Route path="/*">
+            <Redirect to="/" />
+          </Route>
+        </Switch>
+      </Router>
+    </>
   );
 }
 

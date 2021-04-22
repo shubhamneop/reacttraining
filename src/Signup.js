@@ -2,6 +2,7 @@ import React from "react";
 import axios from "axios";
 import Spinner from "./UI/Spinner";
 import { Link } from "react-router-dom";
+import { toast } from "react-toastify";
 
 class Signup extends React.Component {
   constructor() {
@@ -76,6 +77,9 @@ class Signup extends React.Component {
         .then((response) => {
           this.setState({ loading: false });
           console.log("register", response.data);
+          toast.success(`${response.data.message} !`, {
+            position: toast.POSITION.TOP_RIGHT,
+          });
         })
         .catch((error) => {
           this.setState({ loading: false });

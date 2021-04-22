@@ -1,19 +1,23 @@
 import React, { useEffect } from "react";
 import { connect } from "react-redux";
 import { withRouter } from "react-router";
+import { toast } from "react-toastify";
 
 function Order(props) {
   useEffect(() => {
     if (props.stage !== 4) {
       props.history.push("/checkout");
     }
-  }, []);
+  }, [props.stage]);
   console.log(props.history);
   const onOrder = (event) => {
     event.preventDefault();
     props.dispatch({
       type: "CHECKOUT_STAGE",
       payload: 1,
+    });
+    toast.success(`Order Placed !`, {
+      position: toast.POSITION.TOP_RIGHT,
     });
     props.history.replace("/");
   };

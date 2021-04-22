@@ -3,6 +3,7 @@ import axios from "axios";
 import { Link, withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import Spinner from "./UI/Spinner";
+import { toast } from "react-toastify";
 
 function Login(props) {
   ///recoverpassword post {email:""}
@@ -71,10 +72,16 @@ function Login(props) {
               type: "LOGIN",
               payload: response.data,
             });
+            toast.success(`Successfully Login !`, {
+              position: toast.POSITION.TOP_RIGHT,
+            });
             setLoading(false);
             props.history.push("/");
           } else {
-            alert("Invalid Credentional");
+            toast.error(`Invalid Credentional !`, {
+              position: toast.POSITION.TOP_RIGHT,
+            });
+            //alert("Invalid Credentional");
             setLoading(false);
           }
         })

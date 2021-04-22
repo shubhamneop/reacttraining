@@ -15,17 +15,20 @@ function Address(props) {
       props.history.push("/checkout");
     }
     setAddress(props.address);
-  }, []);
+  }, [props.stage]);
   const [errorMessage, seterrorMessage] = useState({});
   const validate = (elements) => {
     var errors = {};
+    const pattern = /^[0-9]+$/;
 
     if (!elements.name.value) {
       errors.name = "Plaese fill name";
     }
     if (!elements.phone.value) {
       errors.phone = "Plaese fill phone";
-    } else if (elements.phone.value.length != 10) {
+    } else if (!pattern.test(elements.phone.value)) {
+      errors.phone = "Characters not allowed";
+    } else if (elements.phone.value.length !== 10) {
       errors.phone = "Plaese enter 10 digit phone no";
     }
     if (!elements.address.value) {
@@ -38,7 +41,9 @@ function Address(props) {
     }
     if (!elements.pincode.value) {
       errors.pincode = "Plaese fill pincode";
-    } else if (elements.pincode.value.length != 6) {
+    } else if (!pattern.test(elements.pincode.value)) {
+      errors.pincode = "Characters not allowed";
+    } else if (elements.pincode.value.length !== 6) {
       errors.pincode = "Plaese enter 6 digit pincode";
     }
     var errorKeys = Object.keys(errors);

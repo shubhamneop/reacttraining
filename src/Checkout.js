@@ -14,7 +14,7 @@ function Checkout(props) {
   var path = route.path;
   var currentpath = props.location.pathname;
   useEffect(() => {
-    if (!props.token) {
+    if (!localStorage.token) {
       props.history.push("/");
     }
   }, [props.token]);
