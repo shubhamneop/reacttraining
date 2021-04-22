@@ -1,5 +1,3 @@
-import store from "./store";
-
 export function FirstMiddleware(store) {
   return function (next) {
     return function (action) {

@@ -29,7 +29,7 @@ function Order(props) {
         </div>
       </div>
       <div>
-        <button onClick={onOrder} className="btn btn-info">
+        <button onClick={onOrder} className="btn btn-outline-primary">
           Order
         </button>
       </div>

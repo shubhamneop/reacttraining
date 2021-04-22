@@ -66,21 +66,6 @@ function Address(props) {
       }
       props.history.push("/checkout/payment");
     }
-    // if (!address.name) {
-    //   seterrorMessage("Plaese fill name");
-    // } else if (!address.phone) {
-    //   seterrorMessage("Plaese fill phone");
-    // } else if (!address.address) {
-    //   seterrorMessage("Plaese fill address");
-    // } else if (!address.city) {
-    //   seterrorMessage("Plaese fill city name");
-    // } else if (!address.pincode) {
-    //   seterrorMessage("Plaese fill pincode");
-    // } else {
-    //   seterrorMessage("");
-    //   props.dispatch({ type: "ADD_ADDRESS", payload: address });
-    //   props.history.push("/checkout/payment");
-    // }
   };
   return (
     <>
@@ -173,8 +158,8 @@ function Address(props) {
               </span>
             </div>
 
-            <button className="btn btn-primary" onClick={submit}>
-              Continue to Checkout
+            <button className="btn btn-outline-primary" onClick={submit}>
+              Add Address
             </button>
           </form>
         </div>
@@ -187,7 +172,6 @@ function Address(props) {
 }
 
 export default connect(function (state, props) {
-  console.log(state);
   return {
     cartData: state?.cart,
     cartTotal: state?.total,

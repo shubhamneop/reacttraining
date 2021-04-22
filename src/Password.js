@@ -4,18 +4,12 @@ import { Link, withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import Spinner from "./UI/Spinner";
 
-function Login(props) {
+function Password(props) {
   ///recoverpassword post {email:""}
 
-  const [user, setUser] = useState();
+  const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
 
-  let getEmail = (event) => {
-    setUser({ ...user, email: event.target.value });
-  };
-  let getPass = (event) => {
-    setUser({ ...user, password: event.target.value });
-  };
   useEffect(() => {
     if (localStorage.token) {
       props.history.push("/");
@@ -34,10 +28,6 @@ function Login(props) {
       if (!isValid) {
         errors.email = "Plaese enter valid email";
       }
-      console.log(isValid);
-    }
-    if (!elements.password.value) {
-      errors.password = "Plaese enter password";
     }
     var errorKeys = Object.keys(errors);
     if (errorKeys.length > 0) {
@@ -49,7 +39,7 @@ function Login(props) {
 
   const submit = (event) => {
     event.preventDefault();
-    var form = document.getElementById("loginform");
+    var form = document.getElementById("forgotform");
     var errors = validate(form.elements);
 
     if (errors) {
@@ -57,26 +47,18 @@ function Login(props) {
     } else {
       seterrorMessage({});
       setLoading(true);
-      let apiurl = "https://apibyashu.herokuapp.com/api/login";
+      let apiurl = "https://apibyashu.herokuapp.com/api/recoverpassword";
       axios({
         url: apiurl,
         method: "post",
-        data: user,
+        data: email,
       })
         .then((response) => {
-          console.log("login success", response.data);
-          if (response.data.token) {
-            localStorage.token = response.data.token;
-            props.dispatch({
-              type: "LOGIN",
-              payload: response.data,
-            });
-            setLoading(false);
-            props.history.push("/");
-          } else {
-            alert("Invalid Credentional");
-            setLoading(false);
+          console.log("forgot password response.. ", response.data);
+          if (response.data.errorMessage) {
+            alert(response.data.errorMessage);
           }
+          setLoading(false);
         })
         .catch((error) => {
           setLoading(false);
@@ -89,38 +71,26 @@ function Login(props) {
       {loading ? (
         <Spinner />
       ) : (
-        <form id="loginform" className="custom-form">
-          <h2 style={{ textAlign: "center" }}>Login</h2>
+        <form id="forgotform" className="custom-form">
+          <h2 style={{ textAlign: "center" }}>Forgot Password</h2>
           <div className="form-group">
             <label>Email</label>
             <input
               type="email"
               name="email"
               className="form-control"
-              onChange={getEmail}
+              value={email}
+              onChange={(event) => setEmail(event.target.value)}
             />
             <span style={{ color: "red" }}>{errorMessage?.email}</span>
           </div>
-          <div className="form-group">
-            <label>Password</label>
-            <input
-              type="password"
-              name="password"
-              className="form-control"
-              onChange={getPass}
-            />
-            <span style={{ color: "red" }}>{errorMessage?.password}</span>
-          </div>
           <button className="btn btn-primary" onClick={submit}>
-            Login
+            Submit
           </button>
           <br></br>
           <br></br>
           <div style={{ float: "left" }}>
-            <Link to="/signup">New User? Click here</Link>
-          </div>
-          <div style={{ float: "right" }}>
-            <Link to="/forgot-password">Forgot Password</Link>
+            <Link to="/login">Login ? CLick here</Link>
           </div>
           <br></br>
         </form>
@@ -129,4 +99,4 @@ function Login(props) {
   );
 }
 
-export default connect()(withRouter(Login));
+export default connect()(withRouter(Password));
