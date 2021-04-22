@@ -9,8 +9,10 @@ import { connect } from "react-redux";
 
 function Checkout(props) {
   let route = useRouteMatch();
+
   var url = route.url;
   var path = route.path;
+  var currentpath = props.location.pathname;
   useEffect(() => {
     if (!props.token) {
       props.history.push("/");
@@ -32,21 +34,101 @@ function Checkout(props) {
       </h1>
       <div className="row" style={{ padding: "20px" }}>
         <div className="col-md-4">
-          <Link to={url}>
-            <li>Cart Summery</li>
-          </Link>
+          <div
+            class="nav flex-column nav-pills"
+            id="v-pills-tab"
+            role="tablist"
+            aria-orientation="vertical"
+          >
+            <Link to={url} className="remove-line">
+              <li
+                className={`checkout-link nav-link ${
+                  url === currentpath && "active"
+                }`}
+                id="v-pills-home-tab"
+                data-toggle="pill"
+              >
+                Cart Summery
+              </li>
+            </Link>
+            {props.stage === 1 ? (
+              <li
+                className="checkout-link nav-link"
+                style={{ cursor: "not-allowed" }}
+              >
+                Address
+              </li>
+            ) : (
+              <Link to={url + "/address"} className="remove-line">
+                <li
+                  className={`checkout-link nav-link ${
+                    url + "/address" === currentpath && "active"
+                  }`}
+                  id="v-pills-profile-tab"
+                  data-toggle="pill"
+                >
+                  Address
+                </li>
+              </Link>
+            )}
+            {props.stage === 2 || props.stage === 1 ? (
+              <li
+                className={`checkout-link nav-link`}
+                style={{ cursor: "not-allowed" }}
+              >
+                Payment
+              </li>
+            ) : (
+              <Link to={url + "/payment"} className="remove-line">
+                <li
+                  className={`checkout-link nav-link ${
+                    url + "/payment" === currentpath && "active"
+                  }`}
+                  id="v-pills-messages-tab"
+                  data-toggle="pill"
+                >
+                  Payment
+                </li>
+              </Link>
+            )}
+            {props.stage !== 4 ? (
+              <li
+                className={`checkout-link nav-link`}
+                style={{ cursor: "not-allowed" }}
+              >
+                Order
+              </li>
+            ) : (
+              <Link to={url + "/order"} className="remove-line">
+                <li
+                  className={`checkout-link nav-link ${
+                    url + "/order" === currentpath && "active"
+                  }`}
+                  id="v-pills-settings-tab"
+                  data-toggle="pill"
+                >
+                  Order
+                </li>
+              </Link>
+            )}
+          </div>
+          {/* <ul className="nav flex-column nav-customs">
+            <Link to={url}>
+              <li className="nav-item">Cart Summery</li>
+            </Link>
 
-          <Link to={url + "/address"}>
-            <li>Address</li>
-          </Link>
+            <Link to={url + "/address"}>
+              <li>Address</li>
+            </Link>
 
-          <Link to={url + "/payment"}>
-            <li>Payment </li>
-          </Link>
+            <Link to={url + "/payment"}>
+              <li>Payment </li>
+            </Link>
 
-          <Link to={url + "/order"}>
-            <li>Order </li>
-          </Link>
+            <Link to={url + "/order"}>
+              <li>Order </li>
+            </Link>
+          </ul> */}
         </div>
         <div className="col-md-8">
           <Route exact path={path} component={CartSummery} />
@@ -62,5 +144,6 @@ function Checkout(props) {
 export default connect(function (state, props) {
   return {
     token: state?.user?.token,
+    stage: state?.stage,
   };
 })(Checkout);

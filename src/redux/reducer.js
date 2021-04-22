@@ -2,6 +2,7 @@ const demo = (
   state = {
     cart: [],
     total: 0,
+    stage: 1,
   },
   action
 ) => {
@@ -55,6 +56,11 @@ const demo = (
     case "ADD_ADDRESS": {
       state = { ...state };
       state["address"] = action.payload;
+      return state;
+    }
+    case "CHECKOUT_STAGE": {
+      state = { ...state };
+      state["stage"] = action.payload;
       return state;
     }
     default:

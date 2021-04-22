@@ -1,9 +1,16 @@
-import React, { Component } from "react";
+import React, { useEffect } from "react";
 import { connect } from "react-redux";
 
 export const CartSummery = (props) => {
+  const nextClick = () => {
+    props.dispatch({
+      type: "CHECKOUT_STAGE",
+      payload: 2,
+    });
+    props.history.push("/checkout/address");
+  };
   return (
-    <div>
+    <div className="cart-design">
       <table className="table table-hover">
         <tbody>
           {props.cartData?.length > 0 &&
@@ -18,11 +25,9 @@ export const CartSummery = (props) => {
                     />{" "}
                   </td>
                   <td className="text-center">
-                    <div className="media-body">
-                      <h4 className="media-heading">
-                        <a>{cart?.name}</a>
-                      </h4>
-                    </div>
+                    <p className="media-heading">
+                      <strong>{cart?.name}</strong>
+                    </p>
                   </td>
                   <td className="text-center">
                     <strong>${cart.price}</strong>
@@ -39,20 +44,19 @@ export const CartSummery = (props) => {
           </tr>
         </tbody>
       </table>
+      {props.stage == 1 && (
+        <button onClick={nextClick} className="btn btn-success">
+          Next
+        </button>
+      )}
     </div>
   );
 };
-
-const mapStateToProps = (state) => ({
-  cartData: state?.cart,
-  cartTotal: state?.total,
-});
-
-const mapDispatchToProps = {};
 
 export default connect(function (state, props) {
   return {
     cartData: state?.cart,
     cartTotal: state?.total,
+    stage: state?.stage,
   };
 })(CartSummery);

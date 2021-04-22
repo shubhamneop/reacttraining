@@ -82,12 +82,12 @@ function Cart(props) {
       >
         Shopping Cart <ShoppingCartIcon style={{ fontSize: "40px" }} />
       </h1>
-      <div className="row" style={{ padding: "10px" }}>
+      <div className="row" style={{ padding: "30px" }}>
         {loading ? (
           <Spinner />
         ) : props.cartData?.length > 0 ? (
           <>
-            <div className="col-sm-8 col-md-8 col-md-offset-1 container">
+            <div className="col-sm-8 col-md-8 col-md-offset-1 container cart-design">
               <table className="table table-hover">
                 <tbody>
                   {props.cartData?.length > 0 &&
@@ -129,10 +129,9 @@ function Cart(props) {
                 </tbody>
               </table>
             </div>
-            <div className="col-sm-4 col-md-4">
+            <div className="col-sm-4 col-md-4 total-cart">
               <div
                 style={{
-                  border: "1px solid black",
                   display: "flex",
                   justifyContent: "space-around",
                   paddingTop: "10px",
@@ -145,14 +144,8 @@ function Cart(props) {
                   Total Price <br />$ {props.cartTotal}
                 </p>
               </div>
-              <Link to="/checkout">
-                {" "}
-                <button
-                  style={{ display: "flex", float: "right", margin: "100px" }}
-                  className="btn btn-success"
-                >
-                  Checkout
-                </button>
+              <Link to="/checkout" className="cart-btn">
+                <button className="btn btn-success">Checkout</button>
               </Link>
             </div>
           </>

@@ -105,7 +105,7 @@ function Navbar(props) {
                 <Link to="/cart">
                   {" "}
                   <button
-                    className="btn btn-warning mr-sm-2"
+                    className="btn btn-outline-warning mr-sm-2"
                     tabindex="-1"
                     aria-disabled="true"
                   >

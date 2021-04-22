@@ -56,7 +56,7 @@ function Login(props) {
       {loading ? (
         <Spinner />
       ) : (
-        <div style={{ width: "50%", margin: "auto" }}>
+        <div className="custom-form">
           <span style={{ color: "red" }}> </span>
           <div className="form-group">
             <label>Email</label>

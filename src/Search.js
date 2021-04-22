@@ -1,15 +1,12 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import Cake from "./Cake";
-import CakeDetails from "./CakeDetails";
 import Carousel from "./Carousel";
 import Spinner from "./UI/Spinner";
 
 function Search(props) {
   const [cakes, setCakes] = useState([]);
-  const [getCake, setGetCake] = useState();
   const [loading, setLoading] = useState(false);
-  console.log(props.location.search);
   const query = new URLSearchParams(props.location.search);
   const token = query.get("q");
 
@@ -29,10 +26,8 @@ function Search(props) {
         console.log(error);
         setLoading(false);
       });
-  }, [props.location.search]);
-  const getDetails = (data) => {
-    setGetCake(data);
-  };
+  }, [props.location.search, token]);
+
   return (
     <>
       <Carousel />
@@ -43,9 +38,7 @@ function Search(props) {
           <div className="row">
             {cakes?.length > 0 ? (
               cakes.map((each, index) => {
-                return (
-                  <Cake cakedata={each} getDetails={getDetails} key={index} />
-                );
+                return <Cake cakedata={each} key={index} />;
               })
             ) : (
               <div style={{ margin: "auto" }}>No Data found</div>

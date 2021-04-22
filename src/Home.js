@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import Carousel from "./Carousel";
 import Cake from "./Cake";
-import CakeDetails from "./CakeDetails";
 import axios from "axios";
 import Spinner from "./UI/Spinner";
 

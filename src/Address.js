@@ -1,39 +1,96 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { CartSummery } from "./CartSummery";
 import { connect } from "react-redux";
 
 function Address(props) {
-  const [address, setAddress] = useState({
+  let [address, setAddress] = useState({
     name: "",
     phone: "",
     address: "",
     city: "",
     pincode: "",
   });
-  const [errorMessage, seterrorMessage] = useState();
+  useEffect(() => {
+    if (props.stage === 1) {
+      props.history.push("/checkout");
+    }
+    setAddress(props.address);
+  }, []);
+  const [errorMessage, seterrorMessage] = useState({});
+  const validate = (elements) => {
+    var errors = {};
+
+    if (!elements.name.value) {
+      errors.name = "Plaese fill name";
+    }
+    if (!elements.phone.value) {
+      errors.phone = "Plaese fill phone";
+    } else if (elements.phone.value.length != 10) {
+      errors.phone = "Plaese enter 10 digit phone no";
+    }
+    if (!elements.address.value) {
+      errors.address = "Plaese fill address";
+    } else if (elements.address.value.length < 5) {
+      errors.address = "Plaese enter address more tha 6 char";
+    }
+    if (!elements.city.value) {
+      errors.city = "Plaese fill city name";
+    }
+    if (!elements.pincode.value) {
+      errors.pincode = "Plaese fill pincode";
+    } else if (elements.pincode.value.length != 6) {
+      errors.pincode = "Plaese enter 6 digit pincode";
+    }
+    var errorKeys = Object.keys(errors);
+    if (errorKeys.length > 0) {
+      return errors;
+    } else {
+      return false;
+    }
+  };
   const submit = (event) => {
     event.preventDefault();
-    console.log(address);
-    if (!address.name) {
-      seterrorMessage("Plaese fill name");
-    } else if (!address.phone) {
-      seterrorMessage("Plaese fill phone");
-    } else if (!address.address) {
-      seterrorMessage("Plaese fill address");
-    } else if (!address.city) {
-      seterrorMessage("Plaese fill city name");
-    } else if (!address.pincode) {
-      seterrorMessage("Plaese fill pincode");
+    var form = document.getElementById("addressform");
+    var errors = validate(form.elements);
+
+    if (errors) {
+      seterrorMessage(errors);
     } else {
-      seterrorMessage("");
+      seterrorMessage({});
       props.dispatch({ type: "ADD_ADDRESS", payload: address });
+      if (props.stage !== 4) {
+        props.dispatch({
+          type: "CHECKOUT_STAGE",
+          payload: 3,
+        });
+      }
+      props.history.push("/checkout/payment");
     }
+    // if (!address.name) {
+    //   seterrorMessage("Plaese fill name");
+    // } else if (!address.phone) {
+    //   seterrorMessage("Plaese fill phone");
+    // } else if (!address.address) {
+    //   seterrorMessage("Plaese fill address");
+    // } else if (!address.city) {
+    //   seterrorMessage("Plaese fill city name");
+    // } else if (!address.pincode) {
+    //   seterrorMessage("Plaese fill pincode");
+    // } else {
+    //   seterrorMessage("");
+    //   props.dispatch({ type: "ADD_ADDRESS", payload: address });
+    //   props.history.push("/checkout/payment");
+    // }
   };
   return (
     <>
       <div className="row">
         <div className="col-md-7">
-          <div style={{ margin: "auto" }}>
+          <form
+            id="addressform"
+            className="custom-form"
+            style={{ margin: "auto", width: "100%" }}
+          >
             <span style={{ color: "red" }}> </span>
             <div className="form-group">
               <label>Name</label>
@@ -41,11 +98,15 @@ function Address(props) {
                 type="text"
                 className="form-control"
                 placeholder="Name"
+                name="name"
+                value={address?.name}
                 onChange={(event) =>
                   setAddress({ ...address, name: event.target.value })
                 }
               />
-              <span style={{ color: "red" }}> </span>
+              <span style={{ color: "red" }}>
+                {errorMessage?.name && errorMessage?.name}{" "}
+              </span>
             </div>
             <div className="form-group">
               <label>Phone</label>
@@ -53,11 +114,15 @@ function Address(props) {
                 type="text"
                 placeholder="Phone No"
                 className="form-control"
+                name="phone"
+                value={address?.phone}
                 onChange={(event) =>
                   setAddress({ ...address, phone: event.target.value })
                 }
               />
-              <span style={{ color: "red" }}> </span>
+              <span style={{ color: "red" }}>
+                {errorMessage?.phone && errorMessage?.phone}{" "}
+              </span>
             </div>
             <div className="form-group">
               <label>Address</label>
@@ -65,10 +130,15 @@ function Address(props) {
                 type="text"
                 placeholder="Address"
                 className="form-control"
+                name="address"
+                value={address?.address}
                 onChange={(event) =>
                   setAddress({ ...address, address: event.target.value })
                 }
               />
+              <span style={{ color: "red" }}>
+                {errorMessage?.address && errorMessage?.address}{" "}
+              </span>
             </div>
             <div className="form-group">
               <label>city</label>
@@ -76,10 +146,15 @@ function Address(props) {
                 type="text"
                 placeholder="City"
                 className="form-control"
+                name="city"
+                value={address?.city}
                 onChange={(event) =>
                   setAddress({ ...address, city: event.target.value })
                 }
               />
+              <span style={{ color: "red" }}>
+                {errorMessage?.city && errorMessage?.city}{" "}
+              </span>
             </div>
             <div className="form-group">
               <label>Pincode</label>
@@ -87,18 +162,21 @@ function Address(props) {
                 type="text"
                 placeholder="Pincode"
                 className="form-control"
+                name="pincode"
+                value={address?.pincode}
                 onChange={(event) =>
                   setAddress({ ...address, pincode: event.target.value })
                 }
               />
+              <span style={{ color: "red" }}>
+                {errorMessage?.pincode && errorMessage?.pincode}{" "}
+              </span>
             </div>
-            <span style={{ color: "red" }}>{errorMessage}</span>
-            <br></br>
 
             <button className="btn btn-primary" onClick={submit}>
               Continue to Checkout
             </button>
-          </div>
+          </form>
         </div>
         <div className="col-md-5">
           <CartSummery cartData={props.cartData} cartTotal={props.cartTotal} />
@@ -113,5 +191,7 @@ export default connect(function (state, props) {
   return {
     cartData: state?.cart,
     cartTotal: state?.total,
+    stage: state?.stage,
+    address: state?.address,
   };
 })(Address);

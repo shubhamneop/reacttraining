@@ -18,3 +18,51 @@ code {
 .spinnner-class {
   z-index: 100;
 }
+
+.checkout-link {
+  margin: 5px;
+  background-color: #ff8100;
+  color: white;
+  border-radius: 20px !important;
+  text-decoration: none !important;
+  box-shadow: 0px 8px 5px black;
+  margin-bottom: 1rem;
+}
+
+.remove-line {
+  text-decoration: none !important;
+}
+
+.custom-form {
+  width: 50%;
+  margin: auto;
+  border: 1px solid;
+  padding: 26px;
+  box-shadow: 5px 10px 18px #ca8d33;
+  margin-top: 50px;
+  border-radius: 30px;
+}
+
+.cart-design {
+  margin: auto;
+  border: 1px solid;
+  padding: 26px;
+  box-shadow: 5px 10px 18px #33c3ca;
+  border-radius: 30px;
+}
+
+.total-cart {
+  border: 1px solid;
+  padding: 14px;
+  max-width: 400px !important;
+  box-sizing: border-box;
+  box-shadow: 5px 10px 13px #33c3ca;
+  border-radius: 0px 20px;
+}
+
+.cart-btn {
+  float: right;
+  position: absolute;
+  bottom: 53px;
+  right: 13px;
+}

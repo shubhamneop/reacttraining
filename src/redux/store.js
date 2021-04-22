@@ -1,7 +1,10 @@
-import { createStore } from "redux";
+import { createStore, applyMiddleware } from "redux";
 import demo from "./reducer";
+import { FirstMiddleware, logger } from "./middlewares";
 
-let store = createStore(demo);
+var middleware = applyMiddleware(logger);
+
+let store = createStore(demo, middleware);
 
 // store.dispatch({
 //   type: "login",
