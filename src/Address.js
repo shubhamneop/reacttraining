@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { CartSummery } from "./CartSummery";
 import { connect } from "react-redux";
+import { toast } from "react-toastify";
 
 function Address(props) {
   let [address, setAddress] = useState({
@@ -12,6 +13,12 @@ function Address(props) {
   });
   useEffect(() => {
     if (props.stage === 1) {
+      props.history.push("/checkout");
+    }
+    if (props.cartData?.length == 0) {
+      toast.warning("Plase add product in cart", {
+        position: toast.POSITION.TOP_RIGHT,
+      });
       props.history.push("/checkout");
     }
     setAddress(props.address);

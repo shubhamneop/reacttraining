@@ -27,7 +27,10 @@ export const CartSummery = (props) => {
                         />{" "}
                       </td>
                       <td className="text-center">
-                        <p className="media-heading">
+                        <p
+                          className="media-heading"
+                          style={{ wordBreak: "break-all" }}
+                        >
                           <strong>{cart?.name}</strong>
                         </p>
                       </td>

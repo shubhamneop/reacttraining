@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
+import axios, { recoverPwdApi } from "./api";
 import { Link, withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import Spinner from "./UI/Spinner";
@@ -48,16 +48,18 @@ function Password(props) {
     } else {
       seterrorMessage({});
       setLoading(true);
-      let apiurl = "https://apibyashu.herokuapp.com/api/recoverpassword";
-      axios({
-        url: apiurl,
-        method: "post",
-        data: email,
-      })
+      axios
+        .post(recoverPwdApi, { email: email })
         .then((response) => {
           console.log("forgot password response.. ", response.data);
           if (response.data.errorMessage) {
             toast.error(`${response.data.errorMessage} !`, {
+              position: toast.POSITION.TOP_RIGHT,
+            });
+            //alert(response.data.errorMessage);
+          }
+          if (response.data.message) {
+            toast.success(`${response.data.message} !`, {
               position: toast.POSITION.TOP_RIGHT,
             });
             //alert(response.data.errorMessage);

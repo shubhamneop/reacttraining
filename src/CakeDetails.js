@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router";
-import axios from "axios";
+import axios, { cakeDetailsApi, addToCartApi } from "./api";
 import StarOutlineIcon from "@material-ui/icons/StarOutline";
 import RateReviewIcon from "@material-ui/icons/RateReview";
 import FavoriteIcon from "@material-ui/icons/Favorite";
@@ -16,12 +16,9 @@ function CakeDetails(props) {
   const [loading, setLoading] = useState(false);
   useEffect(() => {
     setLoading(true);
-    let detailsapiurl =
-      "https://apibyashu.herokuapp.com/api/cake/" + params.cakeid;
-    axios({
-      url: detailsapiurl,
-      method: "get",
-    })
+
+    axios
+      .get(cakeDetailsApi + params.cakeid)
       .then((response) => {
         console.log("all cake", response.data.data);
         setCakes(response.data.data);
@@ -44,21 +41,14 @@ function CakeDetails(props) {
       setLoading(false);
       return false;
     }
-    let detailsapiurl = "https://apibyashu.herokuapp.com/api/addcaketocart";
-    axios({
-      url: detailsapiurl,
-      method: "post",
-      data: {
+    axios
+      .post(addToCartApi, {
         cakeid: cakedata.cakeid,
         name: cakedata.name,
         image: cakedata.image,
         price: cakedata.price,
         weight: cakedata.weight,
-      },
-      headers: {
-        authtoken: props.token,
-      },
-    })
+      })
       .then((response) => {
         props.dispatch({
           type: "ADD_CART",

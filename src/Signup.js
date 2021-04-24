@@ -1,5 +1,5 @@
 import React from "react";
-import axios from "axios";
+import axios, { signUpApi } from "./api";
 import Spinner from "./UI/Spinner";
 import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
@@ -68,12 +68,9 @@ class Signup extends React.Component {
       this.setState({ errorMessage: errors });
     } else {
       this.setState({ loading: true });
-      let apiurl = "https://apibyashu.herokuapp.com/api/register";
-      axios({
-        url: apiurl,
-        method: "post",
-        data: this.user,
-      })
+
+      axios
+        .post(signUpApi, this.user)
         .then((response) => {
           this.setState({ loading: false });
           console.log("register", response.data);

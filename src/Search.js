@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
+import axios, { searchCakesApi } from "./api";
 import Cake from "./Cake";
 import Carousel from "./Carousel";
 import Spinner from "./UI/Spinner";
@@ -9,14 +9,10 @@ function Search(props) {
   const [loading, setLoading] = useState(false);
   const query = new URLSearchParams(props.location.search);
   const token = query.get("q");
-
   useEffect(() => {
     setLoading(true);
-    let searchCakeApi = `https://apibyashu.herokuapp.com/api/searchcakes?q=${token}`;
-    axios({
-      url: searchCakeApi,
-      method: "get",
-    })
+    axios
+      .get(searchCakesApi + token)
       .then((response) => {
         console.log("search result", response.data.data);
         setCakes(response.data.data);

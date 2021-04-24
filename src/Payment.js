@@ -1,11 +1,23 @@
 import React, { useEffect } from "react";
 import { withRouter } from "react-router";
 import { connect } from "react-redux";
+import { toast } from "react-toastify";
 
 function Payment(props) {
   useEffect(() => {
     if (props.stage === 2 || props.stage === 1) {
       props.history.push("/checkout");
+    }
+    if (props.cartData?.length == 0) {
+      toast.warning("Plase add product in cart", {
+        position: toast.POSITION.TOP_RIGHT,
+      });
+      props.history.push("/checkout");
+    } else if (!props.address?.name) {
+      toast.error("Please fill address !", {
+        position: toast.POSITION.TOP_RIGHT,
+      });
+      props.history.push("/checkout/address");
     }
   }, [props.stage]);
   const submit = (event) => {
@@ -65,5 +77,7 @@ function Payment(props) {
 export default connect(function (state, props) {
   return {
     stage: state?.stage,
+    address: state?.address,
+    cartData: state?.cart,
   };
 })(withRouter(Payment));

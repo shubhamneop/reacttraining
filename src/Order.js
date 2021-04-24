@@ -8,8 +8,19 @@ function Order(props) {
     if (props.stage !== 4) {
       props.history.push("/checkout");
     }
+    if (props.cartData?.length == 0) {
+      toast.warning("Plase add product in cart", {
+        position: toast.POSITION.TOP_RIGHT,
+      });
+      props.history.push("/checkout");
+    } else if (!props.address?.name) {
+      toast.error("Please fill address !", {
+        position: toast.POSITION.TOP_RIGHT,
+      });
+      props.history.push("/checkout/address");
+    }
   }, [props.stage]);
-  console.log(props.history);
+
   const onOrder = (event) => {
     event.preventDefault();
     props.dispatch({
@@ -44,5 +55,7 @@ function Order(props) {
 export default connect(function (state, props) {
   return {
     stage: state?.stage,
+    address: state?.address,
+    cartData: state?.cart,
   };
 })(withRouter(Order));

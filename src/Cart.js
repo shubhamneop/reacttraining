@@ -1,58 +1,69 @@
 import React, { useEffect, useState } from "react";
 import { connect } from "react-redux";
-import axios from "axios";
+import axios, { cakeCartApi, removeFromCartApi } from "./api";
 import ShoppingCartIcon from "@material-ui/icons/ShoppingCart";
 import MoodIcon from "@material-ui/icons/Mood";
 import { Link } from "react-router-dom";
 import Spinner from "./UI/Spinner";
 import { toast } from "react-toastify";
+import Modal from "./UI/Modal";
+import DeleteOutlineIcon from "@material-ui/icons/DeleteOutline";
 
 function Cart(props) {
   const [loading, setLoading] = useState(false);
+  const [modal, setModal] = useState(false);
+  const [id, setId] = useState("");
+  const [price, setPrice] = useState(0);
   useEffect(() => {
     setLoading(true);
-    let detailsapiurl = "https://apibyashu.herokuapp.com/api/cakecart";
-    axios({
-      url: detailsapiurl,
-      method: "post",
-      data: {},
-      headers: {
-        authtoken: props.token,
-      },
-    })
-      .then((response) => {
-        //setCartData(response.data.data);
-        var total = 0;
-        response.data.data.map(({ price }) => {
-          total = total + price;
+    if (props.token) {
+      setLoading(true);
+      axios
+        .post(cakeCartApi, {})
+        .then((response) => {
+          //setCartData(response.data.data);
+          var total = 0;
+          if (response.data.data) {
+            response.data.data.map(({ price }) => {
+              total = total + price;
+            });
+            props.dispatch({
+              type: "CART_DATA",
+              payload: response.data.data,
+              total: total,
+            });
+          }
+          setLoading(false);
+        })
+        .catch((error) => {
+          console.log(error);
+          setLoading(false);
         });
-        props.dispatch({
-          type: "CART_DATA",
-          payload: response.data.data,
-          total: total,
-        });
-        setLoading(false);
-      })
-      .catch((error) => {
-        console.log(error);
-        setLoading(false);
-      });
+    } else {
+      setLoading(false);
+    }
   }, [props.token]);
 
-  const removeCart = (id, price) => {
+  const onRemove = (id, price) => {
+    setId(id);
+    setPrice(price);
+    setModal(true);
+  };
+
+  const onClose = (event) => {
+    event.preventDefault();
+    setId("");
+    setPrice(0);
+    setModal(false);
+  };
+
+  const removeCart = (event) => {
+    event.preventDefault();
+    setModal(false);
     setLoading(true);
-    let detailsapiurl =
-      "https://apibyashu.herokuapp.com/api/removecakefromcart";
-    axios({
-      url: detailsapiurl,
-      method: "post",
-      data: { cakeid: id },
-      headers: {
-        authtoken: props.token,
-      },
-    })
+    axios
+      .post(removeFromCartApi, { cakeid: id })
       .then((response) => {
-        console.log("remove cake data", response.data);
         props.dispatch({
           type: "REMOVE_CART_DATA",
           payload: id,
@@ -62,16 +73,18 @@ function Cart(props) {
         toast.success(`${response.data.message} !`, {
           position: toast.POSITION.TOP_RIGHT,
         });
-
-        console.log("after remove cake data", props.cart);
-
-        //setCartData(response.data.data);
+        setId("");
+        setPrice(0);
       })
       .catch((error) => {
         setLoading(false);
+        setId("");
+        setPrice(0);
+        setModal(false);
         console.log(error);
       });
   };
+
   return (
     <div>
       <h1
@@ -118,13 +131,13 @@ function Cart(props) {
                           <td className="text-center">
                             <button
                               onClick={() =>
-                                removeCart(cart?.cakeid, cart?.price)
+                                onRemove(cart?.cakeid, cart?.price)
                               }
                               type="button"
-                              className="btn btn-danger"
+                              title="Remove"
+                              className="btn btn-outline-danger"
                             >
-                              <span className="glyphicon glyphicon-remove"></span>{" "}
-                              Remove
+                              <DeleteOutlineIcon />
                             </button>
                           </td>
                         </tr>
@@ -171,6 +184,27 @@ function Cart(props) {
           </div>
         )}
       </div>
+      <Modal show={modal} modalClosed={onClose}>
+        <div className="alert container" role="alert">
+          <h4 className="alert-heading" style={{ textAlign: "center" }}>
+            Are You Sure ? Want To Remove Item
+          </h4>
+          <hr />
+          <div style={{ display: "flex", justifyContent: "space-between" }}>
+            <p>
+              <button className="btn btn-danger btn-lg" onClick={onClose}>
+                No
+              </button>
+            </p>
+
+            <p className="mb-0">
+              <button onClick={removeCart} className="btn btn-success btn-lg">
+                Yes
+              </button>
+            </p>
+          </div>
+        </div>
+      </Modal>
     </div>
   );
 }

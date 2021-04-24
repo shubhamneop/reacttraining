@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Carousel from "./Carousel";
 import Cake from "./Cake";
-import axios from "axios";
+import axios, { allCakesApi } from "./api";
 import Spinner from "./UI/Spinner";
 
 function Home() {
@@ -9,11 +9,8 @@ function Home() {
   const [loading, setLoading] = useState(false);
   useEffect(() => {
     setLoading(true);
-    let apiurl = "https://apibyashu.herokuapp.com/api/allCakes";
-    axios({
-      url: apiurl,
-      method: "get",
-    })
+    axios
+      .get(allCakesApi)
       .then((response) => {
         console.log("all cake", response.data.data);
         setCakes(response.data.data);

@@ -1,18 +1,15 @@
-import logo from "./logo.svg";
 import "./App.css";
 import Home from "./Home";
 import Navbar from "./Navbar";
-import Carousel from "./Carousel";
 import Signup from "./Signup";
 import Login from "./Login";
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 import Search from "./Search";
-import axios from "axios";
+import axios, { getUserDetailsApi, cakeCartApi } from "./api";
 import {
   BrowserRouter as Router,
   Switch,
   Route,
-  Link,
   Redirect,
 } from "react-router-dom";
 import CakeDetails from "./CakeDetails";
@@ -28,14 +25,8 @@ function App(props) {
     var token = localStorage.token;
 
     if (localStorage.token && !props.user) {
-      let getuserapi = "https://apibyashu.herokuapp.com/api/getuserdetails";
-      axios({
-        url: getuserapi,
-        method: "get",
-        headers: {
-          authtoken: token,
-        },
-      })
+      axios
+        .get(getUserDetailsApi)
         .then((response) => {
           console.log("get user response", response.data);
           props.dispatch({ type: "INIT_USER", payload: response.data.data });
@@ -43,27 +34,24 @@ function App(props) {
         .catch((error) => console.log(error));
     }
 
-    let detailsapiurl = "https://apibyashu.herokuapp.com/api/cakecart";
-    axios({
-      url: detailsapiurl,
-      method: "post",
-      data: {},
-      headers: {
-        authtoken: token,
-      },
-    })
-      .then((response) => {
-        var total = 0;
-        response.data.data.map(({ price }) => {
-          total = total + price;
-        });
-        props.dispatch({
-          type: "CART_DATA",
-          payload: response.data.data,
-          total: total,
-        });
-      })
-      .catch((error) => console.log(error));
+    if (props.token) {
+      axios
+        .post(cakeCartApi, {})
+        .then((response) => {
+          var total = 0;
+          if (response.data.data) {
+            response.data.data.map(({ price }) => {
+              total = total + price;
+            });
+            props.dispatch({
+              type: "CART_DATA",
+              payload: response.data.data,
+              total: total,
+            });
+          }
+        })
+        .catch((error) => console.log(error));
+    }
   }, [props.token]);
 
   return (

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
+import axios, { loginApi } from "./api";
 import { Link, withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import Spinner from "./UI/Spinner";
@@ -58,12 +58,9 @@ function Login(props) {
     } else {
       seterrorMessage({});
       setLoading(true);
-      let apiurl = "https://apibyashu.herokuapp.com/api/login";
-      axios({
-        url: apiurl,
-        method: "post",
-        data: user,
-      })
+
+      axios
+        .post(loginApi, user)
         .then((response) => {
           console.log("login success", response.data);
           if (response.data.token) {
@@ -78,7 +75,7 @@ function Login(props) {
             setLoading(false);
             props.history.push("/");
           } else {
-            toast.error(`Invalid Credentional !`, {
+            toast.error(`${response.data.message} !`, {
               position: toast.POSITION.TOP_RIGHT,
             });
             //alert("Invalid Credentional");
