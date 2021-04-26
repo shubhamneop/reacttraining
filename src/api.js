@@ -32,3 +32,9 @@ export const addToCartApi = "addcaketocart";
 export const removeFromCartApi = "removecakefromcart";
 
 export const searchCakesApi = "searchcakes?q=";
+
+export const addCakeOrderApi = "addcakeorder"; //post
+
+export const cakeOrdersApi = "cakeorders"; //post
+
+//price,name,address,city,pincode,cakes,phone

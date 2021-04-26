@@ -5,7 +5,6 @@ import Signup from "./Signup";
 import Login from "./Login";
 import { useEffect } from "react";
 import Search from "./Search";
-import axios, { getUserDetailsApi, cakeCartApi } from "./api";
 import {
   BrowserRouter as Router,
   Switch,
@@ -18,41 +17,23 @@ import Cart from "./Cart";
 import Checkout from "./Checkout";
 import Password from "./Password";
 import { ToastContainer } from "react-toastify";
+import MyOrder from "./MyOrder";
 
 function App(props) {
   useEffect(() => {
-    document.title = `Cake Shop | ${props.user?.name || "App"}`;
-    var token = localStorage.token;
+    var title = "Shubham`s";
+    document.title = `${title} Cake Shop  | ${props.user?.name || "App"}`;
 
     if (localStorage.token && !props.user) {
-      axios
-        .get(getUserDetailsApi)
-        .then((response) => {
-          console.log("get user response", response.data);
-          props.dispatch({ type: "INIT_USER", payload: response.data.data });
-        })
-        .catch((error) => console.log(error));
+      props.dispatch({ type: "INIT_USER" });
     }
 
     if (props.token) {
-      axios
-        .post(cakeCartApi, {})
-        .then((response) => {
-          var total = 0;
-          if (response.data.data) {
-            response.data.data.map(({ price }) => {
-              total = total + price;
-            });
-            props.dispatch({
-              type: "CART_DATA",
-              payload: response.data.data,
-              total: total,
-            });
-          }
-        })
-        .catch((error) => console.log(error));
+      props.dispatch({
+        type: "CART_DATA_INIT",
+      });
     }
-  }, [props.token]);
+  }, [props.token, props]);
 
   return (
     <>
@@ -72,6 +53,7 @@ function App(props) {
           <Route path="/cart" exact component={Cart} />
           <Route path="/checkout" component={Checkout} />
           <Route path="/forgot-password" exact component={Password} />
+          <Route path="/my-orders" exact component={MyOrder} />
           <Route path="/*">
             <Redirect to="/" />
           </Route>

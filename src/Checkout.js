@@ -17,7 +17,7 @@ function Checkout(props) {
     if (!localStorage.token) {
       props.history.push("/");
     }
-  }, [props.token]);
+  }, [props.token, props.history]);
   return (
     <>
       <h1
@@ -35,7 +35,7 @@ function Checkout(props) {
       <div className="row" style={{ padding: "20px" }}>
         <div className="col-md-4">
           <div
-            class="nav flex-column nav-pills"
+            className="nav flex-column nav-pills"
             id="v-pills-tab"
             role="tablist"
             aria-orientation="vertical"

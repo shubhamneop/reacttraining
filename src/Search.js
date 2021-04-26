@@ -1,28 +1,19 @@
-import React, { useEffect, useState } from "react";
-import axios, { searchCakesApi } from "./api";
+import React, { useEffect } from "react";
 import Cake from "./Cake";
 import Carousel from "./Carousel";
 import Spinner from "./UI/Spinner";
+import { connect } from "react-redux";
 
 function Search(props) {
-  const [cakes, setCakes] = useState([]);
-  const [loading, setLoading] = useState(false);
+  const { loading, dispatch, cakes } = props;
   const query = new URLSearchParams(props.location.search);
   const token = query.get("q");
   useEffect(() => {
-    setLoading(true);
-    axios
-      .get(searchCakesApi + token)
-      .then((response) => {
-        console.log("search result", response.data.data);
-        setCakes(response.data.data);
-        setLoading(false);
-      })
-      .catch((error) => {
-        console.log(error);
-        setLoading(false);
-      });
-  }, [props.location.search, token]);
+    dispatch({
+      type: "SEARCH_CAKE_INIT",
+      payload: token,
+    });
+  }, [props.location.search, token, dispatch]);
 
   return (
     <>
@@ -46,4 +37,9 @@ function Search(props) {
   );
 }
 
-export default Search;
+export default connect(function (state, props) {
+  return {
+    loading: state?.isFetching,
+    cakes: state?.serchCakes,
+  };
+})(Search);

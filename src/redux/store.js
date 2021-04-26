@@ -1,11 +1,24 @@
 import { createStore, applyMiddleware } from "redux";
 import demo from "./reducer";
-import { FirstMiddleware, logger } from "./middlewares";
+import { logger } from "./middlewares";
+import createSaga from "redux-saga";
+import { mainSaga } from "./sagas";
+import { cakesSaga } from "./cakesaga";
+import { all } from "redux-saga/effects";
+import { cartSagas } from "./cartsagas";
 
-var middleware = applyMiddleware(logger);
+var sagaMiddleware = createSaga();
+var middleware = applyMiddleware(logger, sagaMiddleware);
 
 let store = createStore(demo, middleware);
 
+function* rootSaga() {
+  yield all([mainSaga(), cakesSaga(), cartSagas()]);
+}
+// sagaMiddleware.run(loginSaga);
+// sagaMiddleware.run(addCakeSaga);
+// sagaMiddleware.run(getCakeSaga);
+sagaMiddleware.run(rootSaga);
 // store.dispatch({
 //   type: "login",
 // });

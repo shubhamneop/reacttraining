@@ -1,5 +1,4 @@
 import React from "react";
-import logo from "./logo.svg";
 
 var product1 = "bg-1.jpg";
 var product2 = "bg-2.jpg";

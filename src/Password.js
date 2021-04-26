@@ -1,21 +1,16 @@
 import React, { useState, useEffect } from "react";
-import axios, { recoverPwdApi } from "./api";
 import { Link, withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import Spinner from "./UI/Spinner";
-import { toast } from "react-toastify";
 
 function Password(props) {
-  ///recoverpassword post {email:""}
-
   const [email, setEmail] = useState("");
-  const [loading, setLoading] = useState(false);
-
+  const { loading, dispatch } = props;
   useEffect(() => {
     if (localStorage.token) {
       props.history.push("/");
     }
-  }, []);
+  }, [props.history]);
 
   const [errorMessage, seterrorMessage] = useState({});
   const validate = (elements) => {
@@ -47,29 +42,10 @@ function Password(props) {
       seterrorMessage(errors);
     } else {
       seterrorMessage({});
-      setLoading(true);
-      axios
-        .post(recoverPwdApi, { email: email })
-        .then((response) => {
-          console.log("forgot password response.. ", response.data);
-          if (response.data.errorMessage) {
-            toast.error(`${response.data.errorMessage} !`, {
-              position: toast.POSITION.TOP_RIGHT,
-            });
-            //alert(response.data.errorMessage);
-          }
-          if (response.data.message) {
-            toast.success(`${response.data.message} !`, {
-              position: toast.POSITION.TOP_RIGHT,
-            });
-            //alert(response.data.errorMessage);
-          }
-          setLoading(false);
-        })
-        .catch((error) => {
-          setLoading(false);
-          console.log(error);
-        });
+      dispatch({
+        type: "FORGOT_PASSWORD_INIT",
+        payload: { email: email },
+      });
     }
   };
   return (
@@ -105,4 +81,8 @@ function Password(props) {
   );
 }
 
-export default connect()(withRouter(Password));
+export default connect(function (state, props) {
+  return {
+    loading: state?.isFetching,
+  };
+})(withRouter(Password));

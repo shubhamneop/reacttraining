@@ -1,14 +1,15 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { withRouter } from "react-router";
 import { connect } from "react-redux";
 import { toast } from "react-toastify";
 
 function Payment(props) {
+  const [checked, setCheked] = useState(true);
   useEffect(() => {
     if (props.stage === 2 || props.stage === 1) {
       props.history.push("/checkout");
     }
-    if (props.cartData?.length == 0) {
+    if (props.cartData?.length === 0) {
       toast.warning("Plase add product in cart", {
         position: toast.POSITION.TOP_RIGHT,
       });
@@ -19,7 +20,7 @@ function Payment(props) {
       });
       props.history.push("/checkout/address");
     }
-  }, [props.stage]);
+  }, [props.stage, props.address?.name, props.cartData?.length, props.history]);
   const submit = (event) => {
     event.preventDefault();
     if (props.stage !== 4) {
@@ -45,23 +46,23 @@ function Payment(props) {
         className="row"
         style={{ justifyContent: "space-between", paddingRight: "15px" }}
       >
-        <div class="form-check">
+        <div className="form-check">
           <input
-            class="form-check-input"
+            className="form-check-input"
             type="radio"
             name="cod"
             id="flexRadioDefault1"
             value="cod"
-            checked
+            checked={checked}
+            onChange={() => setCheked(true)}
             style={{ border: "0px", width: "100%", height: "2em" }}
           />
-          <label
-            class="form-check-label"
-            for="exampleRadios1"
+          <span
+            className="form-check-label"
             style={{ position: "relative", left: "40px", top: "6px" }}
           >
             COD
-          </label>
+          </span>
         </div>
         <br></br>
         <div>

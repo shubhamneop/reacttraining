@@ -1,15 +1,11 @@
 import React, { useState, useEffect } from "react";
-import axios, { loginApi } from "./api";
 import { Link, withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import Spinner from "./UI/Spinner";
-import { toast } from "react-toastify";
 
 function Login(props) {
-  ///recoverpassword post {email:""}
-
   const [user, setUser] = useState();
-  const [loading, setLoading] = useState(false);
+  const { history } = props;
 
   let getEmail = (event) => {
     setUser({ ...user, email: event.target.value });
@@ -21,7 +17,7 @@ function Login(props) {
     if (localStorage.token) {
       props.history.push("/");
     }
-  }, []);
+  }, [props.isLogin, props.history]);
 
   const [errorMessage, seterrorMessage] = useState({});
   const validate = (elements) => {
@@ -35,7 +31,6 @@ function Login(props) {
       if (!isValid) {
         errors.email = "Plaese enter valid email";
       }
-      console.log(isValid);
     }
     if (!elements.password.value) {
       errors.password = "Plaese enter password";
@@ -57,40 +52,17 @@ function Login(props) {
       seterrorMessage(errors);
     } else {
       seterrorMessage({});
-      setLoading(true);
 
-      axios
-        .post(loginApi, user)
-        .then((response) => {
-          console.log("login success", response.data);
-          if (response.data.token) {
-            localStorage.token = response.data.token;
-            props.dispatch({
-              type: "LOGIN",
-              payload: response.data,
-            });
-            toast.success(`Successfully Login !`, {
-              position: toast.POSITION.TOP_RIGHT,
-            });
-            setLoading(false);
-            props.history.push("/");
-          } else {
-            toast.error(`${response.data.message} !`, {
-              position: toast.POSITION.TOP_RIGHT,
-            });
-            //alert("Invalid Credentional");
-            setLoading(false);
-          }
-        })
-        .catch((error) => {
-          setLoading(false);
-          console.log(error);
-        });
+      props.dispatch({
+        type: "LOGIN",
+        payload: user,
+        history: history,
+      });
     }
   };
   return (
     <>
-      {loading ? (
+      {props.loading ? (
         <Spinner />
       ) : (
         <form id="loginform" className="custom-form">
@@ -133,4 +105,10 @@ function Login(props) {
   );
 }
 
-export default connect()(withRouter(Login));
+export default connect(function (state, props) {
+  return {
+    loading: state?.isFetching,
+    isLogin: state?.isLogin,
+    isError: state?.isLoginError,
+  };
+})(withRouter(Login));

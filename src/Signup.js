@@ -1,8 +1,7 @@
 import React from "react";
-import axios, { signUpApi } from "./api";
 import Spinner from "./UI/Spinner";
 import { Link } from "react-router-dom";
-import { toast } from "react-toastify";
+import { connect } from "react-redux";
 
 class Signup extends React.Component {
   constructor() {
@@ -20,7 +19,6 @@ class Signup extends React.Component {
     // alert("in construction");
   }
   user = {};
-
   goOnline = () => {
     this.setState({ onlineuser: this.state.onlineuser + 1 });
   };
@@ -59,6 +57,7 @@ class Signup extends React.Component {
       return false;
     }
   };
+
   submit = (event) => {
     event.preventDefault();
     var form = document.getElementById("signupform");
@@ -67,28 +66,19 @@ class Signup extends React.Component {
     if (errors) {
       this.setState({ errorMessage: errors });
     } else {
-      this.setState({ loading: true });
-
-      axios
-        .post(signUpApi, this.user)
-        .then((response) => {
-          this.setState({ loading: false });
-          console.log("register", response.data);
-          toast.success(`${response.data.message} !`, {
-            position: toast.POSITION.TOP_RIGHT,
-          });
-        })
-        .catch((error) => {
-          this.setState({ loading: false });
-          console.log(error);
-        });
+      this.props.dispatch({
+        type: "SIGN_UP_INIT",
+        payload: this.user,
+      });
     }
-    console.log("user", this.user);
   };
+
   render() {
+    const { loading } = this.props;
+
     return (
       <>
-        {this.state.loading ? (
+        {loading ? (
           <Spinner />
         ) : (
           <form id="signupform" className="custom-form">
@@ -146,4 +136,8 @@ class Signup extends React.Component {
   }
 }
 
-export default Signup;
+export default connect(function (state, props) {
+  return {
+    loading: state?.isFetching,
+  };
+})(Signup);

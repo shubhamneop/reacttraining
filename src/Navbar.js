@@ -34,7 +34,7 @@ function Navbar(props) {
       <nav className="navbar navbar-expand-lg navbar-light  navbar-color">
         <Link to="/">
           {" "}
-          <a className="navbar-brand">Cake`s Shop</a>
+          <span className="navbar-brand">Cake`s Shop</span>
         </Link>
         <button
           className="navbar-toggler"
@@ -76,9 +76,9 @@ function Navbar(props) {
               </div>
             </li> */}
             <li className="nav-item">
-              <a className="nav-link" tabindex="-1" aria-disabled="true">
+              <span className="nav-link" aria-disabled="true">
                 {props.username && <PermIdentityIcon />} {props.username || ""}
-              </a>
+              </span>
             </li>
           </ul>
           <div className="form-inline my-2 my-lg-0">
@@ -107,13 +107,22 @@ function Navbar(props) {
             {props.logintatstus ? (
               <>
                 <Link to="/cart">
-                  {" "}
                   <button
                     className="btn btn-outline-warning mr-sm-2"
-                    tabindex="-1"
+                    tabIndex="-1"
                     aria-disabled="true"
                   >
-                    <ShoppingCartIcon /> {props.cart?.length}
+                    <ShoppingCartIcon />
+                    {props.cart?.length > 0 && props.cart?.length}
+                  </button>
+                </Link>
+                <Link to="/my-orders">
+                  <button
+                    className="btn btn-outline-info mr-sm-2"
+                    tabIndex="-1"
+                    aria-disabled="true"
+                  >
+                    My Orders
                   </button>
                 </Link>
 

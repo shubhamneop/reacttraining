@@ -15,14 +15,16 @@ function Address(props) {
     if (props.stage === 1) {
       props.history.push("/checkout");
     }
-    if (props.cartData?.length == 0) {
+    if (props.cartData?.length === 0) {
       toast.warning("Plase add product in cart", {
         position: toast.POSITION.TOP_RIGHT,
       });
       props.history.push("/checkout");
     }
-    setAddress(props.address);
-  }, [props.stage]);
+    if (props.address?.name) {
+      setAddress(props.address);
+    }
+  }, [props.stage, props.address, props.cartData?.length, props.history]);
   const [errorMessage, seterrorMessage] = useState({});
   const validate = (elements) => {
     var errors = {};

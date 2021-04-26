@@ -1,48 +1,24 @@
 import React, { useEffect, useState } from "react";
 import { connect } from "react-redux";
-import axios, { cakeCartApi, removeFromCartApi } from "./api";
 import ShoppingCartIcon from "@material-ui/icons/ShoppingCart";
 import MoodIcon from "@material-ui/icons/Mood";
 import { Link } from "react-router-dom";
 import Spinner from "./UI/Spinner";
-import { toast } from "react-toastify";
 import Modal from "./UI/Modal";
 import DeleteOutlineIcon from "@material-ui/icons/DeleteOutline";
 
 function Cart(props) {
-  const [loading, setLoading] = useState(false);
   const [modal, setModal] = useState(false);
   const [id, setId] = useState("");
   const [price, setPrice] = useState(0);
+  const { loading, dispatch } = props;
   useEffect(() => {
-    setLoading(true);
     if (props.token) {
-      setLoading(true);
-      axios
-        .post(cakeCartApi, {})
-        .then((response) => {
-          //setCartData(response.data.data);
-          var total = 0;
-          if (response.data.data) {
-            response.data.data.map(({ price }) => {
-              total = total + price;
-            });
-            props.dispatch({
-              type: "CART_DATA",
-              payload: response.data.data,
-              total: total,
-            });
-          }
-          setLoading(false);
-        })
-        .catch((error) => {
-          console.log(error);
-          setLoading(false);
-        });
-    } else {
-      setLoading(false);
+      dispatch({
+        type: "CART_DATA_INIT",
+      });
     }
-  }, [props.token]);
+  }, [props.token, dispatch]);
 
   const onRemove = (id, price) => {
     setId(id);
@@ -59,30 +35,16 @@ function Cart(props) {
 
   const removeCart = (event) => {
     event.preventDefault();
+
+    dispatch({
+      type: "REMOVE_CART_INIT",
+      payload: { cakeid: id },
+      id: id,
+      price: price,
+    });
+    setId("");
+    setPrice(0);
     setModal(false);
-    setLoading(true);
-    axios
-      .post(removeFromCartApi, { cakeid: id })
-      .then((response) => {
-        props.dispatch({
-          type: "REMOVE_CART_DATA",
-          payload: id,
-          price: price,
-        });
-        setLoading(false);
-        toast.success(`${response.data.message} !`, {
-          position: toast.POSITION.TOP_RIGHT,
-        });
-        setId("");
-        setPrice(0);
-      })
-      .catch((error) => {
-        setLoading(false);
-        setId("");
-        setPrice(0);
-        setModal(false);
-        console.log(error);
-      });
   };
 
   return (
@@ -116,13 +78,12 @@ function Cart(props) {
                               className="media-object"
                               src={cart?.image}
                               style={{ width: "72px", height: "72px" }}
+                              alt="..."
                             />{" "}
                           </td>
                           <td className="text-center">
                             <div className="media-body">
-                              <h4 className="media-heading">
-                                <a>{cart?.name}</a>
-                              </h4>
+                              <h4 className="media-heading">{cart?.name}</h4>
                             </div>
                           </td>
                           <td className="text-center">
@@ -214,5 +175,6 @@ export default connect(function (state, props) {
     token: state?.user?.token,
     cartData: state?.cart,
     cartTotal: state?.total,
+    loading: state?.isFetching,
   };
 })(Cart);

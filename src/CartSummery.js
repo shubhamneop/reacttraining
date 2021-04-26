@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { connect } from "react-redux";
 
 export const CartSummery = (props) => {
@@ -24,6 +24,7 @@ export const CartSummery = (props) => {
                           className="media-object"
                           src={cart?.image}
                           style={{ width: "50px", height: "50px" }}
+                          alt="..."
                         />{" "}
                       </td>
                       <td className="text-center">
@@ -49,7 +50,7 @@ export const CartSummery = (props) => {
               </tr>
             </tbody>
           </table>
-          {props.stage == 1 && (
+          {props.stage === 1 && (
             <button onClick={nextClick} className="btn btn-outline-primary">
               Next
             </button>

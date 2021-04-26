@@ -1,26 +1,16 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect } from "react";
 import Carousel from "./Carousel";
 import Cake from "./Cake";
-import axios, { allCakesApi } from "./api";
 import Spinner from "./UI/Spinner";
+import { connect } from "react-redux";
 
-function Home() {
-  const [cakes, setCakes] = useState([]);
-  const [loading, setLoading] = useState(false);
+function Home(props) {
+  const { loading, dispatch, cakes } = props;
   useEffect(() => {
-    setLoading(true);
-    axios
-      .get(allCakesApi)
-      .then((response) => {
-        console.log("all cake", response.data.data);
-        setCakes(response.data.data);
-        setLoading(false);
-      })
-      .catch((error) => {
-        console.log(error);
-        setLoading(false);
-      });
-  }, []);
+    dispatch({
+      type: "GET_ALLCAKE_INIT",
+    });
+  }, [dispatch]);
 
   return (
     <>
@@ -44,4 +34,9 @@ function Home() {
   );
 }
 
-export default Home;
+export default connect(function (state, props) {
+  return {
+    loading: state?.isFetching,
+    cakes: state?.allCakes,
+  };
+})(Home);
