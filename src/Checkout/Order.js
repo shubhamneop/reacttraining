@@ -2,14 +2,17 @@ import React, { useEffect } from "react";
 import { connect } from "react-redux";
 import { withRouter } from "react-router";
 import { toast } from "react-toastify";
-import Spinner from "./UI/Spinner";
+import Spinner from "../UI/Spinner";
 
 function Order(props) {
+  const { history } = props;
   useEffect(() => {
     if (props.stage !== 4) {
       props.history.push("/checkout");
     }
-    if (props.cartData?.length === 0) {
+    if (props.placeOrder) {
+      props.history.push("/my-orders");
+    } else if (props.cartData?.length === 0) {
       toast.warning("Plase add product in cart", {
         position: toast.POSITION.TOP_RIGHT,
       });
@@ -20,7 +23,13 @@ function Order(props) {
       });
       props.history.push("/checkout/address");
     }
-  }, [props.stage, props.address?.name, props.cartData?.length, props.history]);
+  }, [
+    props.stage,
+    props.address?.name,
+    props.cartData?.length,
+    props.history,
+    props.placeOrder,
+  ]);
 
   const onOrder = (event) => {
     event.preventDefault();
@@ -30,9 +39,8 @@ function Order(props) {
     props.dispatch({
       type: "PLACE_ORDER",
       payload: data,
-      history: props.history,
+      history: history,
     });
-    props.history.push("/my-orders");
   };
   return (
     <>
@@ -67,5 +75,6 @@ export default connect(function (state, props) {
     cartData: state?.cart,
     cartTotal: state?.total,
     loading: state?.isFetching,
+    placeOrder: state?.placeOrder,
   };
 })(withRouter(Order));

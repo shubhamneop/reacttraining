@@ -1,16 +1,23 @@
 import React, { useState, useEffect } from "react";
 import { Link, withRouter } from "react-router-dom";
 import { connect } from "react-redux";
-import Spinner from "./UI/Spinner";
+import Spinner from "../UI/Spinner";
 
-function Password(props) {
-  const [email, setEmail] = useState("");
-  const { loading, dispatch } = props;
+function Login(props) {
+  const [user, setUser] = useState();
+  const { history } = props;
+
+  let getEmail = (event) => {
+    setUser({ ...user, email: event.target.value });
+  };
+  let getPass = (event) => {
+    setUser({ ...user, password: event.target.value });
+  };
   useEffect(() => {
     if (localStorage.token) {
       props.history.push("/");
     }
-  }, [props.history]);
+  }, [props.isLogin, props.history]);
 
   const [errorMessage, seterrorMessage] = useState({});
   const validate = (elements) => {
@@ -25,6 +32,9 @@ function Password(props) {
         errors.email = "Plaese enter valid email";
       }
     }
+    if (!elements.password.value) {
+      errors.password = "Plaese enter password";
+    }
     var errorKeys = Object.keys(errors);
     if (errorKeys.length > 0) {
       return errors;
@@ -35,44 +45,58 @@ function Password(props) {
 
   const submit = (event) => {
     event.preventDefault();
-    var form = document.getElementById("forgotform");
+    var form = document.getElementById("loginform");
     var errors = validate(form.elements);
 
     if (errors) {
       seterrorMessage(errors);
     } else {
       seterrorMessage({});
-      dispatch({
-        type: "FORGOT_PASSWORD_INIT",
-        payload: { email: email },
+
+      props.dispatch({
+        type: "LOGIN",
+        payload: user,
+        history: history,
       });
     }
   };
   return (
     <>
-      {loading ? (
+      {props.loading ? (
         <Spinner />
       ) : (
-        <form id="forgotform" className="custom-form">
-          <h2 style={{ textAlign: "center" }}>Forgot Password</h2>
+        <form id="loginform" className="custom-form">
+          <h2 style={{ textAlign: "center" }}>Login</h2>
           <div className="form-group">
             <label>Email</label>
             <input
               type="email"
               name="email"
               className="form-control"
-              value={email}
-              onChange={(event) => setEmail(event.target.value)}
+              onChange={getEmail}
             />
             <span style={{ color: "red" }}>{errorMessage?.email}</span>
           </div>
+          <div className="form-group">
+            <label>Password</label>
+            <input
+              type="password"
+              name="password"
+              className="form-control"
+              onChange={getPass}
+            />
+            <span style={{ color: "red" }}>{errorMessage?.password}</span>
+          </div>
           <button className="btn btn-primary" onClick={submit}>
-            Submit
+            Login
           </button>
           <br></br>
           <br></br>
           <div style={{ float: "left" }}>
-            <Link to="/login">Login ? CLick here</Link>
+            <Link to="/signup">New User? Click here</Link>
+          </div>
+          <div style={{ float: "right" }}>
+            <Link to="/forgot-password">Forgot Password</Link>
           </div>
           <br></br>
         </form>
@@ -84,5 +108,7 @@ function Password(props) {
 export default connect(function (state, props) {
   return {
     loading: state?.isFetching,
+    isLogin: state?.isLogin,
+    isError: state?.isLoginError,
   };
-})(withRouter(Password));
+})(withRouter(Login));

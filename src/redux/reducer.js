@@ -7,6 +7,7 @@ const demo = (
     allCakes: [],
     serchCakes: [],
     cakeData: null,
+    placeOrder: false,
   },
   action
 ) => {
@@ -63,6 +64,7 @@ const demo = (
       state["user_order"] = [];
       state["cakeData"] = null;
       state["address"] = {};
+      state["placeOrder"] = false;
       return state;
     }
     case "ADD_CART": {
@@ -107,6 +109,7 @@ const demo = (
     case "ORDER_SUCCESS": {
       state = { ...state };
       state["isFetching"] = false;
+      state["placeOrder"] = true;
       state["cart"] = [];
       state["stage"] = 1;
       return state;
@@ -114,6 +117,7 @@ const demo = (
     case "ORDER_FAIL": {
       state = { ...state };
       state["isFetching"] = false;
+      state["placeOrder"] = false;
       return state;
     }
     case "GET_ORDER_INIT": {
@@ -130,6 +134,7 @@ const demo = (
     case "GET_ORDER_FAIL": {
       state = { ...state };
       state["isFetching"] = false;
+      state["placeOrder"] = false;
       return state;
     }
     case "FORGOT_PASSWORD_INIT": {
@@ -234,6 +239,11 @@ const demo = (
     case "GET_CAKE_FAIL": {
       state = { ...state };
       state["isFetching"] = false;
+      return state;
+    }
+    case "SET_ORDER_STATUS": {
+      state = { ...state };
+      state["placeOrder"] = false;
       return state;
     }
     default:

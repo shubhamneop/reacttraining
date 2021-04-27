@@ -8,6 +8,9 @@ function MyOrder(props) {
     dispatch({
       type: "GET_ORDER_INIT",
     });
+    dispatch({
+      type: "SET_ORDER_STATUS",
+    });
   }, [dispatch]);
   return (
     <>

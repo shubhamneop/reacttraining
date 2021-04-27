@@ -51,6 +51,7 @@ function* addCakeGenerator(action) {
       yield put({ type: "ORDER_FAIL" });
     } else {
       yield put({ type: "ORDER_SUCCESS" });
+      action.history.push("/my-orders");
       toast.success(`Order Placed !`, {
         position: toast.POSITION.TOP_RIGHT,
       });

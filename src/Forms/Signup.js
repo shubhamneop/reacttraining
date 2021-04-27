@@ -1,5 +1,5 @@
 import React from "react";
-import Spinner from "./UI/Spinner";
+import Spinner from "../UI/Spinner";
 import { Link } from "react-router-dom";
 import { connect } from "react-redux";
 

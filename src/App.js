@@ -1,8 +1,8 @@
 import "./App.css";
 import Home from "./Home";
 import Navbar from "./Navbar";
-import Signup from "./Signup";
-import Login from "./Login";
+import Signup from "./Forms/Signup";
+import Login from "./Forms/Login";
 import { useEffect } from "react";
 import Search from "./Search";
 import {
@@ -14,8 +14,8 @@ import {
 import CakeDetails from "./CakeDetails";
 import { connect } from "react-redux";
 import Cart from "./Cart";
-import Checkout from "./Checkout";
-import Password from "./Password";
+import Checkout from "./Checkout/Checkout";
+import Password from "./Forms/Password";
 import { ToastContainer } from "react-toastify";
 import MyOrder from "./MyOrder";
 
