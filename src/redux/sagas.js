@@ -8,6 +8,7 @@ import axios, {
 } from "../api";
 import { call, put, takeEvery, all } from "redux-saga/effects";
 import { toast } from "react-toastify";
+import * as actionTypes from "./actionTypes";
 
 function login(action) {
   return axios.post(loginApi, action.payload);
@@ -17,19 +18,19 @@ function* loginGenerater(action) {
   try {
     const result = yield call(login, action);
     if (result.data.token) {
-      yield put({ type: "LOGIN_SUCCESS", payload: result.data });
-      action.history.push("/");
+      yield put({ type: actionTypes.LOGIN_SUCCESS, payload: result.data });
+
       toast.success(`Login Successfull !!`, {
         position: toast.POSITION.TOP_RIGHT,
       });
     } else {
-      yield put({ type: "LOGIN_FAIL" });
+      yield put({ type: actionTypes.LOGIN_FAIL });
       toast.error(`Invalid Credential !!`, {
         position: toast.POSITION.TOP_RIGHT,
       });
     }
   } catch (error) {
-    yield put({ type: "LOGIN_FAIL" });
+    yield put({ type: actionTypes.LOGIN_FAIL });
     toast.error(`Invalid Credential !!`, {
       position: toast.POSITION.TOP_RIGHT,
     });
@@ -37,7 +38,7 @@ function* loginGenerater(action) {
 }
 
 export function* loginSaga() {
-  yield takeEvery("LOGIN", loginGenerater);
+  yield takeEvery(actionTypes.LOGIN, loginGenerater);
 }
 
 function addCake(action) {
@@ -48,21 +49,20 @@ function* addCakeGenerator(action) {
   try {
     var result = yield call(addCake, action);
     if (result.data.error) {
-      yield put({ type: "ORDER_FAIL" });
+      yield put({ type: actionTypes.ORDER_FAIL });
     } else {
-      yield put({ type: "ORDER_SUCCESS" });
-      action.history.push("/my-orders");
+      yield put({ type: actionTypes.ORDER_SUCCESS });
       toast.success(`Order Placed !`, {
         position: toast.POSITION.TOP_RIGHT,
       });
     }
   } catch (error) {
-    yield put({ type: "ORDER_FAIL" });
+    yield put({ type: actionTypes.ORDER_FAIL });
   }
 }
 
 export function* addCakeSaga() {
-  yield takeEvery("PLACE_ORDER", addCakeGenerator);
+  yield takeEvery(actionTypes.PLACE_ORDER, addCakeGenerator);
 }
 
 function getCake() {
@@ -73,18 +73,21 @@ function* getCakeGenerator(action) {
   try {
     var result = yield call(getCake, action);
     if (result.data.cakeorders) {
-      yield put({ type: "GET_ORDER", payload: result.data.cakeorders });
+      yield put({
+        type: actionTypes.GET_ORDER,
+        payload: result.data.cakeorders,
+      });
     } else {
-      yield put({ type: "GET_ORDER_FAIL" });
+      yield put({ type: actionTypes.GET_ORDER_FAIL });
     }
   } catch (error) {
-    yield put({ type: "GET_ORDER_FAIL" });
+    yield put({ type: actionTypes.GET_ORDER_FAIL });
     console.log("error get cake", error);
   }
 }
 
 export function* getCakeSaga() {
-  yield takeEvery("GET_ORDER_INIT", getCakeGenerator);
+  yield takeEvery(actionTypes.GET_ORDER_INIT, getCakeGenerator);
 }
 
 function forgotPassword(action) {
@@ -94,7 +97,7 @@ function forgotPassword(action) {
 function* passwordGenerator(action) {
   const result = yield call(forgotPassword, action);
   try {
-    yield put({ type: "FORGOT_PASSWORD" });
+    yield put({ type: actionTypes.FORGOT_PASSWORD });
     if (result.data.errorMessage) {
       toast.error(`${result.data.errorMessage} !`, {
         position: toast.POSITION.TOP_RIGHT,
@@ -105,13 +108,13 @@ function* passwordGenerator(action) {
       });
     }
   } catch (error) {
-    yield put({ type: "FORGOT_PASSWORD_FAIL" });
+    yield put({ type: actionTypes.FORGOT_PASSWORD_FAIL });
     console.log("error forgot pwd", error);
   }
 }
 
 export function* passwordSaga() {
-  yield takeEvery("FORGOT_PASSWORD_INIT", passwordGenerator);
+  yield takeEvery(actionTypes.FORGOT_PASSWORD_INIT, passwordGenerator);
 }
 
 function signUp(action) {
@@ -121,14 +124,10 @@ function signUp(action) {
 function* signupGenerator(action) {
   try {
     const result = yield call(signUp, action);
-    yield put({ type: "SIGN_UP_SUCCESS" });
+    yield put({ type: actionTypes.SIGN_UP_SUCCESS });
     if (result.data.message) {
       toast.success(`${result.data.message} !`, {
         position: toast.POSITION.TOP_RIGHT,
-      });
-      yield put({
-        type: "LOGIN",
-        payload: action.payload,
       });
     }
   } catch (error) {
@@ -137,7 +136,7 @@ function* signupGenerator(action) {
 }
 
 export function* SignUpSaga() {
-  yield takeEvery("SIGN_UP_INIT", signupGenerator);
+  yield takeEvery(actionTypes.SIGN_UP_INIT, signupGenerator);
 }
 
 function initUser(action) {
@@ -149,20 +148,20 @@ function* initUserGenerator(action) {
     const response = yield call(initUser, action);
     if (response.data?.data?.token) {
       yield put({
-        type: "INIT_USER_SUCCESS",
+        type: actionTypes.INIT_USER_SUCCESS,
         payload: response.data.data,
       });
     } else {
-      yield put({ type: "INIT_USER_FAIL" });
+      yield put({ type: actionTypes.INIT_USER_FAIL });
     }
   } catch (error) {
-    yield put({ type: "INIT_USER_FAIL" });
+    yield put({ type: actionTypes.INIT_USER_FAIL });
     console.log("error in init user", error);
   }
 }
 
 export function* initUserSaga() {
-  yield takeEvery("INIT_USER", initUserGenerator);
+  yield takeEvery(actionTypes.INIT_USER, initUserGenerator);
 }
 
 export function* mainSaga() {

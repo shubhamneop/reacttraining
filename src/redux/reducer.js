@@ -1,3 +1,4 @@
+import * as actionTypes from "./actionTypes";
 const demo = (
   state = {
     cart: [],
@@ -8,35 +9,36 @@ const demo = (
     serchCakes: [],
     cakeData: null,
     placeOrder: false,
+    addToCart: false,
   },
   action
 ) => {
   switch (action.type) {
-    case "INIT_USER": {
+    case actionTypes.INIT_USER: {
       state = { ...state };
       state["isFetching"] = true;
       return state;
     }
-    case "INIT_USER_SUCCESS": {
+    case actionTypes.INIT_USER_SUCCESS: {
       state = { ...state };
       state["isLogin"] = true;
       state["isFetching"] = false;
       state["user"] = action.payload;
       return state;
     }
-    case "INIT_USER_FAIL": {
+    case actionTypes.INIT_USER_FAIL: {
       state = { ...state };
       state["isLogin"] = false;
       state["isFetching"] = false;
 
       return state;
     }
-    case "LOGIN": {
+    case actionTypes.LOGIN: {
       state = { ...state };
       state["isFetching"] = true;
       return state;
     }
-    case "LOGIN_SUCCESS": {
+    case actionTypes.LOGIN_SUCCESS: {
       state = { ...state };
       state["isLogin"] = true;
       state["user"] = action.payload;
@@ -46,16 +48,15 @@ const demo = (
 
       return state;
     }
-    case "LOGIN_FAIL": {
+    case actionTypes.LOGIN_FAIL: {
       state = { ...state };
       state["isFetching"] = false;
       state["isLoginError"] = true;
 
       return state;
     }
-    case "LOGOUT": {
+    case actionTypes.LOGOUT: {
       state = { ...state };
-      localStorage.clear();
       state["isLogin"] = false;
       state["user"] = {};
       state["cart"] = [];
@@ -67,15 +68,16 @@ const demo = (
       state["placeOrder"] = false;
       return state;
     }
-    case "ADD_CART": {
+    case actionTypes.ADD_CART: {
       state = { ...state };
       state["cart"] = [...state.cart, action.payload];
       state["total"] = state.total + action.payload.price;
       state["cakeData"] = null;
       state["isFetching"] = false;
+      state["addToCart"] = true;
       return state;
     }
-    case "CART_DATA": {
+    case actionTypes.CART_DATA: {
       state = { ...state };
       state["cart"] = action.payload;
       state["total"] = action.total;
@@ -83,30 +85,30 @@ const demo = (
 
       return state;
     }
-    case "REMOVE_CART_DATA": {
+    case actionTypes.REMOVE_CART_DATA: {
       state = { ...state };
       state["cart"] = state.cart.filter((x) => x.cakeid !== action.payload);
       state["total"] = state.total - action.price;
       state["isFetching"] = false;
       return state;
     }
-    case "ADD_ADDRESS": {
+    case actionTypes.ADD_ADDRESS: {
       state = { ...state };
       state["address"] = action.payload;
       return state;
     }
-    case "CHECKOUT_STAGE": {
+    case actionTypes.CHECKOUT_STAGE: {
       state = { ...state };
       state["stage"] = action.payload;
       return state;
     }
 
-    case "PLACE_ORDER": {
+    case actionTypes.PLACE_ORDER: {
       state = { ...state };
       state["isFetching"] = true;
       return state;
     }
-    case "ORDER_SUCCESS": {
+    case actionTypes.ORDER_SUCCESS: {
       state = { ...state };
       state["isFetching"] = false;
       state["placeOrder"] = true;
@@ -114,134 +116,137 @@ const demo = (
       state["stage"] = 1;
       return state;
     }
-    case "ORDER_FAIL": {
+    case actionTypes.ORDER_FAIL: {
       state = { ...state };
       state["isFetching"] = false;
       state["placeOrder"] = false;
       return state;
     }
-    case "GET_ORDER_INIT": {
+    case actionTypes.GET_ORDER_INIT: {
       state = { ...state };
       state["isFetching"] = true;
       return state;
     }
-    case "GET_ORDER": {
+    case actionTypes.GET_ORDER: {
       state = { ...state };
       state["isFetching"] = false;
       state["user_order"] = action.payload;
       return state;
     }
-    case "GET_ORDER_FAIL": {
+    case actionTypes.GET_ORDER_FAIL: {
       state = { ...state };
       state["isFetching"] = false;
       state["placeOrder"] = false;
       return state;
     }
-    case "FORGOT_PASSWORD_INIT": {
+    case actionTypes.FORGOT_PASSWORD_INIT: {
       state = { ...state };
       state["isFetching"] = true;
       return state;
     }
-    case "FORGOT_PASSWORD": {
+    case actionTypes.FORGOT_PASSWORD: {
       state = { ...state };
       state["isFetching"] = false;
       return state;
     }
-    case "FORGOT_PASSWORD_FAIL": {
+    case actionTypes.FORGOT_PASSWORD_FAIL: {
       state = { ...state };
       state["isFetching"] = false;
       return state;
     }
     ////////////cakes///////////
-    case "GET_ALLCAKE_INIT": {
+    case actionTypes.GET_ALLCAKE_INIT: {
       state = { ...state };
       state["isFetching"] = true;
       return state;
     }
-    case "GET_ALLCAKE_SUCCESS": {
+    case actionTypes.GET_ALLCAKE_SUCCESS: {
       state = { ...state };
       state["isFetching"] = false;
       state["allCakes"] = action.payload;
       return state;
     }
-    case "GET_ALLCAKE_FAIL": {
+    case actionTypes.GET_ALLCAKE_FAIL: {
       state = { ...state };
       state["isFetching"] = false;
       return state;
     }
-    case "SEARCH_CAKE_INIT": {
+    case actionTypes.SEARCH_CAKE_INIT: {
       state = { ...state };
       state["isFetching"] = true;
       return state;
     }
-    case "SEARCH_CAKE_SUCCESS": {
+    case actionTypes.SEARCH_CAKE_SUCCESS: {
       state = { ...state };
       state["isFetching"] = false;
       state["serchCakes"] = action.payload;
       return state;
     }
-    case "SEARCH_CAKE_FAIL": {
+    case actionTypes.SEARCH_CAKE_FAIL: {
       state = { ...state };
       state["isFetching"] = false;
       return state;
     }
-    case "SIGN_UP_INIT": {
+    case actionTypes.SIGN_UP_INIT: {
       state = { ...state };
       state["isFetching"] = true;
       return state;
     }
-    case "SIGN_UP_SUCCESS": {
+    case actionTypes.SIGN_UP_SUCCESS: {
       state = { ...state };
       state["isFetching"] = false;
       return state;
     }
-    case "CART_DATA_INIT": {
+    case actionTypes.CART_DATA_INIT: {
       state = { ...state };
       state["isFetching"] = true;
+      state["addToCart"] = false;
       return state;
     }
-    case "CART_DATA_FAIL": {
+    case actionTypes.CART_DATA_FAIL: {
       state = { ...state };
       state["isFetching"] = false;
       return state;
     }
-    case "ADD_CART_INIT": {
+    case actionTypes.ADD_CART_INIT: {
       state = { ...state };
       state["isFetching"] = true;
       return state;
     }
-    case "ADD_CART_FAIL": {
+    case actionTypes.ADD_CART_FAIL: {
+      state = { ...state };
+      state["isFetching"] = false;
+      state["addToCart"] = false;
+      return state;
+    }
+    case actionTypes.REMOVE_CART_INIT: {
+      state = { ...state };
+      state["isFetching"] = true;
+      return state;
+    }
+    case actionTypes.REMOVE_CART_FAIL: {
       state = { ...state };
       state["isFetching"] = false;
       return state;
     }
-    case "REMOVE_CART_INIT": {
+    case actionTypes.GET_CAKE_INIT: {
       state = { ...state };
       state["isFetching"] = true;
+      state["addToCart"] = false;
       return state;
     }
-    case "REMOVE_CART_FAIL": {
-      state = { ...state };
-      state["isFetching"] = false;
-      return state;
-    }
-    case "GET_CAKE_INIT": {
-      state = { ...state };
-      state["isFetching"] = true;
-      return state;
-    }
-    case "GET_CAKE_SUCCESS": {
+    case actionTypes.GET_CAKE_SUCCESS: {
       state = { ...state };
       state["isFetching"] = false;
       state["cakeData"] = action.payload;
       return state;
     }
-    case "GET_CAKE_FAIL": {
+    case actionTypes.GET_CAKE_FAIL: {
       state = { ...state };
       state["isFetching"] = false;
       return state;
     }
-    case "SET_ORDER_STATUS": {
+    case actionTypes.SET_ORDER_STATUS: {
       state = { ...state };
       state["placeOrder"] = false;
       return state;

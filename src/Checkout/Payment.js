@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { withRouter } from "react-router";
 import { connect } from "react-redux";
 import { toast } from "react-toastify";
+import { setCheckoutStage } from "../redux/thunk/thunks";
 
 function Payment(props) {
   const [checked, setCheked] = useState(true);
@@ -24,10 +25,7 @@ function Payment(props) {
   const submit = (event) => {
     event.preventDefault();
     if (props.stage !== 4) {
-      props.dispatch({
-        type: "CHECKOUT_STAGE",
-        payload: 4,
-      });
+      props.dispatch(setCheckoutStage(4));
     }
     props.history.push("/checkout/order");
   };

@@ -3,6 +3,7 @@ import { connect } from "react-redux";
 import { withRouter } from "react-router";
 import { toast } from "react-toastify";
 import Spinner from "../UI/Spinner";
+import { PLACE_ORDER } from "../redux/actionTypes";
 
 function Order(props) {
   const { history } = props;
@@ -37,7 +38,7 @@ function Order(props) {
     data.price = props.cartTotal;
     data.cakes = props.cartData;
     props.dispatch({
-      type: "PLACE_ORDER",
+      type: PLACE_ORDER,
       payload: data,
       history: history,
     });

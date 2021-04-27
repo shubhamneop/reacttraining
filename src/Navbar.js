@@ -4,6 +4,7 @@ import PermIdentityIcon from "@material-ui/icons/PermIdentity";
 import { connect } from "react-redux";
 import ShoppingCartIcon from "@material-ui/icons/ShoppingCart";
 import { toast } from "react-toastify";
+import { LogoutAsync } from "./redux/thunk/authThunks";
 
 function Navbar(props) {
   const [searchData, setSearchData] = useState("");
@@ -22,7 +23,7 @@ function Navbar(props) {
 
   const makeLogout = (event) => {
     event.preventDefault();
-    props.dispatch({ type: "LOGOUT" });
+    props.onLogout();
     toast.success(`Logout Successfully !`, {
       position: toast.POSITION.TOP_RIGHT,
     });
@@ -148,10 +149,16 @@ function Navbar(props) {
   );
 }
 
-export default connect(function (state, props) {
+const mapStateToProps = (state) => {
   return {
     username: state?.user?.name,
     logintatstus: state?.isLogin,
     cart: state?.cart,
   };
-})(withRouter(Navbar));
+};
+const mapDispatchToProps = (dispatch) => {
+  return {
+    onLogout: () => dispatch(LogoutAsync()),
+  };
+};
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Navbar));

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { CartSummery } from "./CartSummery";
 import { connect } from "react-redux";
 import { toast } from "react-toastify";
+import { setCheckoutStage, addAddress } from "../redux/thunk/thunks";
 
 function Address(props) {
   let [address, setAddress] = useState({
@@ -71,12 +72,9 @@ function Address(props) {
       seterrorMessage(errors);
     } else {
       seterrorMessage({});
-      props.dispatch({ type: "ADD_ADDRESS", payload: address });
+      props.dispatch(addAddress(address));
       if (props.stage !== 4) {
-        props.dispatch({
-          type: "CHECKOUT_STAGE",
-          payload: 3,
-        });
+        props.dispatch(setCheckoutStage(3));
       }
       props.history.push("/checkout/payment");
     }

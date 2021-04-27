@@ -1,17 +1,19 @@
 import React, { useEffect } from "react";
 import { connect } from "react-redux";
 import Spinner from "./UI/Spinner";
+import { getOrderInit, setOrderStatus } from "./redux/thunk/thunks";
 
 function MyOrder(props) {
-  const { myOrder, loading, dispatch } = props;
+  const { myOrder, loading, onGetOrder, onSetOrderStatus, placeOrder } = props;
   useEffect(() => {
-    dispatch({
-      type: "GET_ORDER_INIT",
-    });
-    dispatch({
-      type: "SET_ORDER_STATUS",
-    });
-  }, [dispatch]);
+    onGetOrder();
+  }, [onGetOrder]);
+  useEffect(() => {
+    if (placeOrder) {
+      onSetOrderStatus();
+    }
+  }, [onSetOrderStatus, placeOrder]);
+
   return (
     <>
       {loading ? (
@@ -30,37 +32,45 @@ function MyOrder(props) {
             My Orders
           </h1>
           <div className="cart-design">
-            <table className="table table-hover">
-              <tbody>
-                {myOrder.map(({ cakes, index }) => {
-                  return cakes.map((cake, index1) => {
-                    return (
-                      <tr key={Math.random().toString()}>
-                        <td className="text-center">
-                          <img
-                            className="media-object"
-                            src={cake?.image}
-                            style={{ width: "50px", height: "50px" }}
-                            alt="..."
-                          />{" "}
-                        </td>
-                        <td className="text-center">
-                          <p
-                            className="media-heading"
-                            style={{ wordBreak: "break-all" }}
-                          >
-                            <strong>{cake?.name}</strong>
-                          </p>
-                        </td>
-                        <td className="text-center">
-                          <strong>${cake.price}</strong>
-                        </td>
-                      </tr>
-                    );
-                  });
-                })}
-              </tbody>
-            </table>
+            {myOrder?.length > 0 ? (
+              <table className="table table-hover">
+                <tbody>
+                  {myOrder.map(({ cakes, index }) => {
+                    return cakes.map((cake, index1) => {
+                      return (
+                        <tr key={Math.random().toString()}>
+                          <td className="text-center">
+                            <img
+                              className="media-object"
+                              src={cake?.image}
+                              style={{ width: "50px", height: "50px" }}
+                              alt="..."
+                            />
+                          </td>
+                          <td className="text-center">
+                            <p
+                              className="media-heading"
+                              style={{ wordBreak: "break-all" }}
+                            >
+                              <strong>{cake?.name}</strong>
+                            </p>
+                          </td>
+                          <td className="text-center">
+                            <strong>${cake.price}</strong>
+                          </td>
+                        </tr>
+                      );
+                    });
+                  })}
+                </tbody>
+              </table>
+            ) : (
+              <div className="alert container" role="alert">
+                <h4 className="alert-heading" style={{ textAlign: "center" }}>
+                  Make Same Order !
+                </h4>
+              </div>
+            )}
           </div>
         </div>
       )}
@@ -68,9 +78,19 @@ function MyOrder(props) {
   );
 }
 
-export default connect(function (state) {
+const mapStateToProps = (state) => {
   return {
     myOrder: state?.user_order,
     loading: state?.isFetching,
+    placeOrder: state?.placeOrder,
   };
-})(MyOrder);
+};
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    onGetOrder: () => dispatch(getOrderInit()),
+    onSetOrderStatus: () => dispatch(setOrderStatus()),
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(MyOrder);

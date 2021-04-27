@@ -2,10 +2,11 @@ import React, { useState, useEffect } from "react";
 import { Link, withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import Spinner from "../UI/Spinner";
+import { LoginThunk } from "../redux/thunk/authThunks";
 
 function Login(props) {
   const [user, setUser] = useState();
-  const { history } = props;
+  const { history, isLogin } = props;
 
   let getEmail = (event) => {
     setUser({ ...user, email: event.target.value });
@@ -15,9 +16,12 @@ function Login(props) {
   };
   useEffect(() => {
     if (localStorage.token) {
-      props.history.push("/");
+      history.push("/");
     }
-  }, [props.isLogin, props.history]);
+    if (isLogin) {
+      history.push("/");
+    }
+  }, [isLogin, history]);
 
   const [errorMessage, seterrorMessage] = useState({});
   const validate = (elements) => {
@@ -52,12 +56,7 @@ function Login(props) {
       seterrorMessage(errors);
     } else {
       seterrorMessage({});
-
-      props.dispatch({
-        type: "LOGIN",
-        payload: user,
-        history: history,
-      });
+      props.dispatch(LoginThunk(user));
     }
   };
   return (

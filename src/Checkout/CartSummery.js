@@ -1,12 +1,10 @@
 import React from "react";
 import { connect } from "react-redux";
+import { setCheckoutStage } from "../redux/thunk/thunks";
 
 export const CartSummery = (props) => {
   const nextClick = () => {
-    props.dispatch({
-      type: "CHECKOUT_STAGE",
-      payload: 2,
-    });
+    props.dispatch(setCheckoutStage(2));
     props.history.push("/checkout/address");
   };
   return (

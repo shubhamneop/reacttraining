@@ -6,17 +6,24 @@ import FavoriteIcon from "@material-ui/icons/Favorite";
 import { connect } from "react-redux";
 import Spinner from "./UI/Spinner";
 import { toast } from "react-toastify";
+import { GET_CAKE_INIT, ADD_CART_INIT } from "./redux/actionTypes";
 var cake = "/product17.jpg";
 
 function CakeDetails(props) {
   let params = useParams();
-  const { history, loading, dispatch, cakedata } = props;
+  const { history, loading, dispatch, cakedata, addtoCart } = props;
   useEffect(() => {
     dispatch({
-      type: "GET_CAKE_INIT",
+      type: GET_CAKE_INIT,
       payload: params.cakeid,
     });
   }, [params.cakeid, dispatch]);
+
+  useEffect(() => {
+    if (addtoCart) {
+      history.push("/cart");
+    }
+  }, [history, addtoCart]);
 
   const addToCart = () => {
     if (!props?.token) {
@@ -28,7 +35,7 @@ function CakeDetails(props) {
       return false;
     } else {
       dispatch({
-        type: "ADD_CART_INIT",
+        type: ADD_CART_INIT,
         payload: {
           cakeid: cakedata.cakeid,
           name: cakedata.name,
@@ -133,5 +140,6 @@ export default connect(function (state, props) {
     token: state?.user?.token,
     loading: state?.isFetching,
     cakedata: state?.cakeData,
+    addtoCart: state?.addToCart,
   };
 })(CakeDetails);

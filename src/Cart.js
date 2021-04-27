@@ -6,6 +6,8 @@ import { Link } from "react-router-dom";
 import Spinner from "./UI/Spinner";
 import Modal from "./UI/Modal";
 import DeleteOutlineIcon from "@material-ui/icons/DeleteOutline";
+import { cartDataInit } from "./redux/thunk/thunks";
+import { REMOVE_CART_INIT } from "./redux/actionTypes";
 
 function Cart(props) {
   const [modal, setModal] = useState(false);
@@ -14,9 +16,7 @@ function Cart(props) {
   const { loading, dispatch } = props;
   useEffect(() => {
     if (props.token) {
-      dispatch({
-        type: "CART_DATA_INIT",
-      });
+      dispatch(cartDataInit());
     }
   }, [props.token, dispatch]);
 
@@ -37,7 +37,7 @@ function Cart(props) {
     event.preventDefault();
 
     dispatch({
-      type: "REMOVE_CART_INIT",
+      type: REMOVE_CART_INIT,
       payload: { cakeid: id },
       id: id,
       price: price,

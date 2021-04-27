@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Link, withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import Spinner from "../UI/Spinner";
+import { PasswordThunk } from "../redux/thunk/authThunks";
 
 function Password(props) {
   const [email, setEmail] = useState("");
@@ -42,10 +43,7 @@ function Password(props) {
       seterrorMessage(errors);
     } else {
       seterrorMessage({});
-      dispatch({
-        type: "FORGOT_PASSWORD_INIT",
-        payload: { email: email },
-      });
+      dispatch(PasswordThunk({ email: email }));
     }
   };
   return (

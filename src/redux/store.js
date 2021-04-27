@@ -1,14 +1,14 @@
 import { createStore, applyMiddleware } from "redux";
 import demo from "./reducer";
-import { logger } from "./middlewares";
 import createSaga from "redux-saga";
 import { mainSaga } from "./sagas";
 import { cakesSaga } from "./cakesaga";
 import { all } from "redux-saga/effects";
 import { cartSagas } from "./cartsagas";
+import thunk from "redux-thunk";
 
 var sagaMiddleware = createSaga();
-var middleware = applyMiddleware(logger, sagaMiddleware);
+var middleware = applyMiddleware(thunk, sagaMiddleware);
 
 let store = createStore(demo, middleware);
 

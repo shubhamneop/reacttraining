@@ -18,6 +18,8 @@ import Checkout from "./Checkout/Checkout";
 import Password from "./Forms/Password";
 import { ToastContainer } from "react-toastify";
 import MyOrder from "./MyOrder";
+import { cartDataInit } from "./redux/thunk/thunks";
+import { InitUser } from "./redux/thunk/authThunks";
 
 function App(props) {
   useEffect(() => {
@@ -25,13 +27,11 @@ function App(props) {
     document.title = `${title} Cake Shop  | ${props.user?.name || "App"}`;
 
     if (localStorage.token && !props.user) {
-      props.dispatch({ type: "INIT_USER" });
+      props.dispatch(InitUser());
     }
 
     if (props.token) {
-      props.dispatch({
-        type: "CART_DATA_INIT",
-      });
+      props.dispatch(cartDataInit());
     }
   }, [props.token, props]);
 

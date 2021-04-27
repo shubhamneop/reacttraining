@@ -3,6 +3,7 @@ import Cake from "./Cake";
 import Carousel from "./Carousel";
 import Spinner from "./UI/Spinner";
 import { connect } from "react-redux";
+import { SEARCH_CAKE_INIT } from "./redux/actionTypes";
 
 function Search(props) {
   const { loading, dispatch, cakes } = props;
@@ -10,7 +11,7 @@ function Search(props) {
   const token = query.get("q");
   useEffect(() => {
     dispatch({
-      type: "SEARCH_CAKE_INIT",
+      type: SEARCH_CAKE_INIT,
       payload: token,
     });
   }, [props.location.search, token, dispatch]);

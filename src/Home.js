@@ -3,13 +3,12 @@ import Carousel from "./Carousel";
 import Cake from "./Cake";
 import Spinner from "./UI/Spinner";
 import { connect } from "react-redux";
+import { getAllCakeInit } from "./redux/thunk/thunks";
 
 function Home(props) {
   const { loading, dispatch, cakes } = props;
   useEffect(() => {
-    dispatch({
-      type: "GET_ALLCAKE_INIT",
-    });
+    dispatch(getAllCakeInit());
   }, [dispatch]);
 
   return (

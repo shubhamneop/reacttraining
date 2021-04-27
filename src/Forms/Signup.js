@@ -2,6 +2,7 @@ import React from "react";
 import Spinner from "../UI/Spinner";
 import { Link } from "react-router-dom";
 import { connect } from "react-redux";
+import { SignupThunk } from "../redux/thunk/authThunks";
 
 class Signup extends React.Component {
   constructor() {
@@ -66,10 +67,7 @@ class Signup extends React.Component {
     if (errors) {
       this.setState({ errorMessage: errors });
     } else {
-      this.props.dispatch({
-        type: "SIGN_UP_INIT",
-        payload: this.user,
-      });
+      this.props.dispatch(SignupThunk(this.user));
     }
   };
 
