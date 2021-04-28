@@ -1,12 +1,15 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { Link, withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import Spinner from "../UI/Spinner";
 import { LoginThunk } from "../redux/thunk/authThunks";
+import { UserContext } from "../UserContext";
 
 function Login(props) {
   const [user, setUser] = useState();
-  const { history, isLogin } = props;
+  const { history } = props;
+  const context = useContext(UserContext);
+  const { isLogin, loading } = context;
 
   let getEmail = (event) => {
     setUser({ ...user, email: event.target.value });
@@ -61,7 +64,7 @@ function Login(props) {
   };
   return (
     <>
-      {props.loading ? (
+      {loading ? (
         <Spinner />
       ) : (
         <form id="loginform" className="custom-form">
@@ -106,8 +109,6 @@ function Login(props) {
 
 export default connect(function (state, props) {
   return {
-    loading: state?.isFetching,
-    isLogin: state?.isLogin,
     isError: state?.isLoginError,
   };
 })(withRouter(Login));

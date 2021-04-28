@@ -1,12 +1,15 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useContext } from "react";
 import { connect } from "react-redux";
 import { withRouter } from "react-router";
 import { toast } from "react-toastify";
 import Spinner from "../UI/Spinner";
 import { PLACE_ORDER } from "../redux/actionTypes";
+import { UserContext } from "../UserContext";
 
 function Order(props) {
   const { history } = props;
+  const context = useContext(UserContext);
+  const { loading } = context;
   useEffect(() => {
     if (props.stage !== 4) {
       props.history.push("/checkout");
@@ -45,7 +48,7 @@ function Order(props) {
   };
   return (
     <>
-      {props.loading ? (
+      {loading ? (
         <Spinner />
       ) : (
         <>
@@ -75,7 +78,6 @@ export default connect(function (state, props) {
     address: state?.address,
     cartData: state?.cart,
     cartTotal: state?.total,
-    loading: state?.isFetching,
     placeOrder: state?.placeOrder,
   };
 })(withRouter(Order));

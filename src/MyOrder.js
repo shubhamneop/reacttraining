@@ -1,20 +1,27 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import { connect } from "react-redux";
 import Spinner from "./UI/Spinner";
 import { getOrderInit, setOrderStatus } from "./redux/thunk/thunks";
 import Modal from "./UI/Modal";
+import { UserContext } from "./UserContext";
 
 function MyOrder(props) {
   const [modal, setModal] = useState(false);
   const [details, setDetails] = useState("");
-  const { myOrder, loading, onGetOrder, onSetOrderStatus, placeOrder } = props;
+  const context = useContext(UserContext);
+  const { isLogin, loading } = context;
+  const { myOrder, onGetOrder, onSetOrderStatus, placeOrder } = props;
   useEffect(() => {
+    if (!isLogin) {
+      props.history.push("/");
+    }
     onGetOrder();
-  }, [onGetOrder]);
+  }, [onGetOrder, isLogin, props.history]);
   useEffect(() => {
     if (placeOrder) {
       onSetOrderStatus();
     }
+    setModal(false);
   }, [onSetOrderStatus, placeOrder]);
 
   const onClose = (event) => {
@@ -96,12 +103,16 @@ function MyOrder(props) {
         modalClosed={onClose}
         style={{ width: "70%", left: "15%" }}
       >
-        <div className="alert  container" role="alert">
+        <div
+          className="alert  container"
+          role="alert"
+          style={{ maxHeight: "400px", overflow: "auto" }}
+        >
           <h4 className="alert-heading" style={{ textAlign: "center" }}>
             Order Details
           </h4>
 
-          <table className="table table-hover">
+          <table className="table" key={Math.random().toString()}>
             <thead>
               <tr>
                 <th className="text-center">Order ID</th>
@@ -135,6 +146,36 @@ function MyOrder(props) {
             </tbody>
           </table>
           <hr />
+          <table className="table table-striped" key={Math.random().toString()}>
+            <tbody>
+              {details?.cakes?.length > 0 &&
+                details?.cakes.map((cake) => {
+                  return (
+                    <tr key={Math.random().toString()}>
+                      <td className="text-center">
+                        <img
+                          className="media-object"
+                          src={cake?.image}
+                          style={{ width: "50px", height: "50px" }}
+                          alt="..."
+                        />
+                      </td>
+                      <td className="text-center">
+                        <p
+                          className="media-heading"
+                          style={{ wordBreak: "break-all" }}
+                        >
+                          <strong>{cake?.name}</strong>
+                        </p>
+                      </td>
+                      <td className="text-center">
+                        <strong>${cake.price}</strong>
+                      </td>
+                    </tr>
+                  );
+                })}
+            </tbody>
+          </table>
 
           <div style={{ display: "flex", justifyContent: "space-between" }}>
             <p>
@@ -152,7 +193,6 @@ function MyOrder(props) {
 const mapStateToProps = (state) => {
   return {
     myOrder: state?.user_order,
-    loading: state?.isFetching,
     placeOrder: state?.placeOrder,
   };
 };

@@ -1,12 +1,15 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useContext } from "react";
 import Carousel from "./Carousel";
 import Cake from "./Cake";
 import Spinner from "./UI/Spinner";
 import { connect } from "react-redux";
 import { getAllCakeInit } from "./redux/thunk/thunks";
+import { UserContext } from "./UserContext";
 
 function Home(props) {
-  const { loading, dispatch, cakes } = props;
+  const { dispatch, cakes } = props;
+  const context = useContext(UserContext);
+  const { loading } = context;
   useEffect(() => {
     dispatch(getAllCakeInit());
   }, [dispatch]);
@@ -35,7 +38,6 @@ function Home(props) {
 
 export default connect(function (state, props) {
   return {
-    loading: state?.isFetching,
     cakes: state?.allCakes,
   };
 })(Home);

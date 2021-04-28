@@ -20,6 +20,8 @@ import { ToastContainer } from "react-toastify";
 import MyOrder from "./MyOrder";
 import { cartDataInit } from "./redux/thunk/thunks";
 import { InitUser } from "./redux/thunk/authThunks";
+import ErrorBoundary from "./ErrorBoundary";
+import UserProvider from "./UserContext";
 
 function App(props) {
   useEffect(() => {
@@ -38,27 +40,31 @@ function App(props) {
   return (
     <>
       <ToastContainer />
-      <Router>
-        <Navbar />
-        <Switch>
-          <Route path="/login" exact>
-            <Login />
-          </Route>
+      <ErrorBoundary>
+        <UserProvider>
+          <Router>
+            <Navbar />
+            <Switch>
+              <Route path="/login" exact>
+                <Login />
+              </Route>
 
-          <Route path="/signup" exact component={Signup} />
+              <Route path="/signup" exact component={Signup} />
 
-          <Route path="/" exact component={Home} />
-          <Route path="/search" exact component={Search} />
-          <Route path="/cake/:cakeid" exact component={CakeDetails} />
-          <Route path="/cart" exact component={Cart} />
-          <Route path="/checkout" component={Checkout} />
-          <Route path="/forgot-password" exact component={Password} />
-          <Route path="/my-orders" exact component={MyOrder} />
-          <Route path="/*">
-            <Redirect to="/" />
-          </Route>
-        </Switch>
-      </Router>
+              <Route path="/" exact component={Home} />
+              <Route path="/search" exact component={Search} />
+              <Route path="/cake/:cakeid" exact component={CakeDetails} />
+              <Route path="/cart" exact component={Cart} />
+              <Route path="/checkout" component={Checkout} />
+              <Route path="/forgot-password" exact component={Password} />
+              <Route path="/my-orders" exact component={MyOrder} />
+              <Route path="/*">
+                <Redirect to="/" />
+              </Route>
+            </Switch>
+          </Router>
+        </UserProvider>
+      </ErrorBoundary>
     </>
   );
 }

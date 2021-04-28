@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useContext } from "react";
 import { useParams } from "react-router";
 import StarOutlineIcon from "@material-ui/icons/StarOutline";
 import RateReviewIcon from "@material-ui/icons/RateReview";
@@ -7,11 +7,14 @@ import { connect } from "react-redux";
 import Spinner from "./UI/Spinner";
 import { toast } from "react-toastify";
 import { GET_CAKE_INIT, ADD_CART_INIT } from "./redux/actionTypes";
+import { UserContext } from "./UserContext";
 var cake = "/product17.jpg";
 
 function CakeDetails(props) {
   let params = useParams();
-  const { history, loading, dispatch, cakedata, addtoCart } = props;
+  const { history, dispatch, cakedata, addtoCart } = props;
+  const context = useContext(UserContext);
+  const { loading, token } = context;
   useEffect(() => {
     dispatch({
       type: GET_CAKE_INIT,
@@ -26,7 +29,7 @@ function CakeDetails(props) {
   }, [history, addtoCart]);
 
   const addToCart = () => {
-    if (!props?.token) {
+    if (!token) {
       toast.error("Please Login !", {
         position: toast.POSITION.TOP_RIGHT,
       });
@@ -137,8 +140,6 @@ function CakeDetails(props) {
 
 export default connect(function (state, props) {
   return {
-    token: state?.user?.token,
-    loading: state?.isFetching,
     cakedata: state?.cakeData,
     addtoCart: state?.addToCart,
   };

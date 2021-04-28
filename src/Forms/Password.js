@@ -1,12 +1,15 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { Link, withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import Spinner from "../UI/Spinner";
 import { PasswordThunk } from "../redux/thunk/authThunks";
+import { UserContext } from "../UserContext";
 
 function Password(props) {
   const [email, setEmail] = useState("");
-  const { loading, dispatch } = props;
+  const { dispatch } = props;
+  const context = useContext(UserContext);
+  const { loading } = context;
   useEffect(() => {
     if (localStorage.token) {
       props.history.push("/");
@@ -79,8 +82,4 @@ function Password(props) {
   );
 }
 
-export default connect(function (state, props) {
-  return {
-    loading: state?.isFetching,
-  };
-})(withRouter(Password));
+export default connect()(withRouter(Password));

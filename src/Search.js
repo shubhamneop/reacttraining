@@ -1,12 +1,15 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useContext } from "react";
 import Cake from "./Cake";
 import Carousel from "./Carousel";
 import Spinner from "./UI/Spinner";
 import { connect } from "react-redux";
 import { SEARCH_CAKE_INIT } from "./redux/actionTypes";
+import { UserContext } from "./UserContext";
 
 function Search(props) {
-  const { loading, dispatch, cakes } = props;
+  const { dispatch, cakes } = props;
+  const context = useContext(UserContext);
+  const { loading } = context;
   const query = new URLSearchParams(props.location.search);
   const token = query.get("q");
   useEffect(() => {
@@ -40,7 +43,6 @@ function Search(props) {
 
 export default connect(function (state, props) {
   return {
-    loading: state?.isFetching,
     cakes: state?.serchCakes,
   };
 })(Search);

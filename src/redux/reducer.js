@@ -30,6 +30,7 @@ const demo = (
       state = { ...state };
       state["isLogin"] = false;
       state["isFetching"] = false;
+      localStorage.clear();
 
       return state;
     }
@@ -87,7 +88,7 @@ const demo = (
     }
     case actionTypes.REMOVE_CART_DATA: {
       state = { ...state };
-      state["cart"] = state.cart.filter((x) => x.cakeid !== action.payload);
+      state["cart"] = state.cart.filter((x) => x._id !== action.payload);
       state["total"] = state.total - action.price;
       state["isFetching"] = false;
       return state;

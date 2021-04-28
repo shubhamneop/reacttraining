@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import { connect } from "react-redux";
 import ShoppingCartIcon from "@material-ui/icons/ShoppingCart";
 import MoodIcon from "@material-ui/icons/Mood";
@@ -8,17 +8,20 @@ import Modal from "./UI/Modal";
 import DeleteOutlineIcon from "@material-ui/icons/DeleteOutline";
 import { cartDataInit } from "./redux/thunk/thunks";
 import { REMOVE_CART_INIT } from "./redux/actionTypes";
+import { UserContext } from "./UserContext";
 
 function Cart(props) {
   const [modal, setModal] = useState(false);
   const [id, setId] = useState("");
   const [price, setPrice] = useState(0);
-  const { loading, dispatch } = props;
+  const { dispatch } = props;
+  const context = useContext(UserContext);
+  const { loading, token } = context;
   useEffect(() => {
-    if (props.token) {
+    if (token) {
       dispatch(cartDataInit());
     }
-  }, [props.token, dispatch]);
+  }, [token, dispatch]);
 
   const onRemove = (id, price) => {
     setId(id);
@@ -38,8 +41,8 @@ function Cart(props) {
 
     dispatch({
       type: REMOVE_CART_INIT,
-      payload: { cakeid: id },
-      id: id,
+      payload: { cakeid: id.cakeid },
+      id: id._id,
       price: price,
     });
     setId("");
@@ -91,9 +94,7 @@ function Cart(props) {
                           </td>
                           <td className="text-center">
                             <button
-                              onClick={() =>
-                                onRemove(cart?.cakeid, cart?.price)
-                              }
+                              onClick={() => onRemove(cart, cart?.price)}
                               type="button"
                               title="Remove"
                               className="btn btn-outline-danger"
@@ -134,9 +135,7 @@ function Cart(props) {
             </h4>
             <hr />
             <div style={{ display: "flex", justifyContent: "space-between" }}>
-              <p>
-                Plaese add some cake to cart{!props?.token && ", Please login"}
-              </p>
+              <p>Plaese add some cake to cart{!token && ", Please login"}</p>
 
               <p className="mb-0">
                 Sweet Shopping <MoodIcon style={{ color: "#08aae8" }} /> !
@@ -172,9 +171,7 @@ function Cart(props) {
 
 export default connect(function (state, props) {
   return {
-    token: state?.user?.token,
     cartData: state?.cart,
     cartTotal: state?.total,
-    loading: state?.isFetching,
   };
 })(Cart);

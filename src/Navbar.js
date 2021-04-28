@@ -1,14 +1,16 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import { Link, withRouter } from "react-router-dom";
 import PermIdentityIcon from "@material-ui/icons/PermIdentity";
 import { connect } from "react-redux";
 import ShoppingCartIcon from "@material-ui/icons/ShoppingCart";
 import { toast } from "react-toastify";
 import { LogoutAsync } from "./redux/thunk/authThunks";
+import { UserContext } from "./UserContext";
 
 function Navbar(props) {
   const [searchData, setSearchData] = useState("");
-
+  const context = useContext(UserContext);
+  const { logintatstus, username } = context;
   const serach = (event) => {
     event.preventDefault();
     props.history.push(`/search?q=${searchData}`);
@@ -78,7 +80,7 @@ function Navbar(props) {
             </li> */}
             <li className="nav-item">
               <span className="nav-link" aria-disabled="true">
-                {props.username && <PermIdentityIcon />} {props.username || ""}
+                {username && <PermIdentityIcon />} {username || ""}
               </span>
             </li>
           </ul>
@@ -105,7 +107,7 @@ function Navbar(props) {
             >
               Search
             </button>
-            {props.logintatstus ? (
+            {logintatstus ? (
               <>
                 <Link to="/cart">
                   <button
@@ -151,8 +153,6 @@ function Navbar(props) {
 
 const mapStateToProps = (state) => {
   return {
-    username: state?.user?.name,
-    logintatstus: state?.isLogin,
     cart: state?.cart,
   };
 };
