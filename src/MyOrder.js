@@ -98,94 +98,99 @@ function MyOrder(props) {
           </div>
         </div>
       )}
-      <Modal
-        show={modal}
-        modalClosed={onClose}
-        style={{ width: "70%", left: "15%" }}
-      >
-        <div
-          className="alert  container"
-          role="alert"
-          style={{ maxHeight: "400px", overflow: "auto" }}
+      {modal && (
+        <Modal
+          show={modal}
+          modalClosed={onClose}
+          style={{ width: "70%", left: "15%" }}
         >
-          <h4 className="alert-heading" style={{ textAlign: "center" }}>
-            Order Details
-          </h4>
+          <div
+            className="alert  container"
+            role="alert"
+            style={{ maxHeight: "400px", overflow: "auto" }}
+          >
+            <h4 className="alert-heading" style={{ textAlign: "center" }}>
+              Order Details
+            </h4>
 
-          <table className="table" key={Math.random().toString()}>
-            <thead>
-              <tr>
-                <th className="text-center">Order ID</th>
-                <th className="text-center">Name</th>
-                <th className="text-center">Address</th>
-                <th className="text-center">Price</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr key={Math.random().toString()}>
-                <td className="text-center">{details?.orderid}</td>
-                <td className="text-center">
-                  <p
-                    className="media-heading"
-                    style={{ wordBreak: "break-all" }}
-                  >
-                    {details?.name}
-                  </p>
-                </td>
-                <td className="text-center">
-                  <p
-                    className="media-heading"
-                    style={{ wordBreak: "break-all" }}
-                  >
-                    {details?.address},{details?.city}, {details?.pincode},{" "}
-                    {details?.phone}{" "}
-                  </p>
-                </td>
-                <td className="text-center">${details?.price}</td>
-              </tr>
-            </tbody>
-          </table>
-          <hr />
-          <table className="table table-striped" key={Math.random().toString()}>
-            <tbody>
-              {details?.cakes?.length > 0 &&
-                details?.cakes.map((cake) => {
-                  return (
-                    <tr key={Math.random().toString()}>
-                      <td className="text-center">
-                        <img
-                          className="media-object"
-                          src={cake?.image}
-                          style={{ width: "50px", height: "50px" }}
-                          alt="..."
-                        />
-                      </td>
-                      <td className="text-center">
-                        <p
-                          className="media-heading"
-                          style={{ wordBreak: "break-all" }}
-                        >
-                          <strong>{cake?.name}</strong>
-                        </p>
-                      </td>
-                      <td className="text-center">
-                        <strong>${cake.price}</strong>
-                      </td>
-                    </tr>
-                  );
-                })}
-            </tbody>
-          </table>
+            <table className="table" key={Math.random().toString()}>
+              <thead>
+                <tr>
+                  <th className="text-center">Order ID</th>
+                  <th className="text-center">Name</th>
+                  <th className="text-center">Address</th>
+                  <th className="text-center">Price</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr key={Math.random().toString()}>
+                  <td className="text-center">{details?.orderid}</td>
+                  <td className="text-center">
+                    <p
+                      className="media-heading"
+                      style={{ wordBreak: "break-all" }}
+                    >
+                      {details?.name}
+                    </p>
+                  </td>
+                  <td className="text-center">
+                    <p
+                      className="media-heading"
+                      style={{ wordBreak: "break-all" }}
+                    >
+                      {details?.address},{details?.city}, {details?.pincode},{" "}
+                      {details?.phone}{" "}
+                    </p>
+                  </td>
+                  <td className="text-center">${details?.price}</td>
+                </tr>
+              </tbody>
+            </table>
+            <hr />
+            <table
+              className="table table-striped"
+              key={Math.random().toString()}
+            >
+              <tbody>
+                {details?.cakes?.length > 0 &&
+                  details?.cakes.map((cake) => {
+                    return (
+                      <tr key={Math.random().toString()}>
+                        <td className="text-center">
+                          <img
+                            className="media-object"
+                            src={cake?.image}
+                            style={{ width: "50px", height: "50px" }}
+                            alt="..."
+                          />
+                        </td>
+                        <td className="text-center">
+                          <p
+                            className="media-heading"
+                            style={{ wordBreak: "break-all" }}
+                          >
+                            <strong>{cake?.name}</strong>
+                          </p>
+                        </td>
+                        <td className="text-center">
+                          <strong>${cake.price}</strong>
+                        </td>
+                      </tr>
+                    );
+                  })}
+              </tbody>
+            </table>
 
-          <div style={{ display: "flex", justifyContent: "space-between" }}>
-            <p>
-              <button className="btn btn-danger btn-lg" onClick={onClose}>
-                Close
-              </button>
-            </p>
+            <div style={{ display: "flex", justifyContent: "space-between" }}>
+              <p>
+                <button className="btn btn-danger btn-lg" onClick={onClose}>
+                  Close
+                </button>
+              </p>
+            </div>
           </div>
-        </div>
-      </Modal>
+        </Modal>
+      )}
     </>
   );
 }

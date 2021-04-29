@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect, useContext, useRef } from "react";
 import { Link, withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import Spinner from "../UI/Spinner";
@@ -6,7 +6,7 @@ import { PasswordThunk } from "../redux/thunk/authThunks";
 import { UserContext } from "../UserContext";
 
 function Password(props) {
-  const [email, setEmail] = useState("");
+  const emailRef = useRef();
   const { dispatch } = props;
   const context = useContext(UserContext);
   const { loading } = context;
@@ -46,7 +46,7 @@ function Password(props) {
       seterrorMessage(errors);
     } else {
       seterrorMessage({});
-      dispatch(PasswordThunk({ email: email }));
+      dispatch(PasswordThunk({ email: emailRef.current.value }));
     }
   };
   return (
@@ -62,8 +62,7 @@ function Password(props) {
               type="email"
               name="email"
               className="form-control"
-              value={email}
-              onChange={(event) => setEmail(event.target.value)}
+              ref={emailRef}
             />
             <span style={{ color: "red" }}>{errorMessage?.email}</span>
           </div>

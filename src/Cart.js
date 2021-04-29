@@ -144,27 +144,29 @@ function Cart(props) {
           </div>
         )}
       </div>
-      <Modal show={modal} modalClosed={onClose}>
-        <div className="alert container" role="alert">
-          <h4 className="alert-heading" style={{ textAlign: "center" }}>
-            Are You Sure ? Want To Remove Item
-          </h4>
-          <hr />
-          <div style={{ display: "flex", justifyContent: "space-between" }}>
-            <p>
-              <button className="btn btn-danger btn-lg" onClick={onClose}>
-                No
-              </button>
-            </p>
+      {modal && (
+        <Modal show={modal} modalClosed={onClose}>
+          <div className="alert container" role="alert">
+            <h4 className="alert-heading" style={{ textAlign: "center" }}>
+              Are You Sure ? Want To Remove Item
+            </h4>
+            <hr />
+            <div style={{ display: "flex", justifyContent: "space-between" }}>
+              <p>
+                <button className="btn btn-danger btn-lg" onClick={onClose}>
+                  No
+                </button>
+              </p>
 
-            <p className="mb-0">
-              <button onClick={removeCart} className="btn btn-success btn-lg">
-                Yes
-              </button>
-            </p>
+              <p className="mb-0">
+                <button onClick={removeCart} className="btn btn-success btn-lg">
+                  Yes
+                </button>
+              </p>
+            </div>
           </div>
-        </div>
-      </Modal>
+        </Modal>
+      )}
     </div>
   );
 }
