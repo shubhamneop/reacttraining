@@ -3,7 +3,7 @@ import Home from "./Home";
 import Navbar from "./Navbar";
 import Signup from "./Forms/Signup";
 import Login from "./Forms/Login";
-import { useEffect } from "react";
+import React, { useEffect, Suspense } from "react";
 import Search from "./Search";
 import {
   BrowserRouter as Router,
@@ -18,16 +18,19 @@ import Checkout from "./Checkout/Checkout";
 import Password from "./Forms/Password";
 import { ToastContainer } from "react-toastify";
 import MyOrder from "./MyOrder";
-import { cartDataInit } from "./redux/thunk/thunks";
+import { cartDataInit, getAllCakeInit } from "./redux/thunk/thunks";
 import { InitUser } from "./redux/thunk/authThunks";
 import ErrorBoundary from "./ErrorBoundary";
 import UserProvider from "./UserContext";
+import Spinner from "./UI/Spinner";
+
+const SuspenceAdmin = React.lazy(() => import("./Admin"));
 
 function App(props) {
   useEffect(() => {
     var title = "Shubham`s";
     document.title = `${title} Cake Shop  | ${props.user?.name || "App"}`;
-
+    props.dispatch(getAllCakeInit());
     if (localStorage.token && !props.user) {
       props.dispatch(InitUser());
     }
@@ -58,6 +61,11 @@ function App(props) {
               <Route path="/checkout" component={Checkout} />
               <Route path="/forgot-password" exact component={Password} />
               <Route path="/my-orders" exact component={MyOrder} />
+              <Route path="/admin" exact>
+                <Suspense fallback={<Spinner />}>
+                  <SuspenceAdmin />
+                </Suspense>
+              </Route>
               <Route path="/*">
                 <Redirect to="/" />
               </Route>

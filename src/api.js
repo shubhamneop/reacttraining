@@ -5,11 +5,25 @@ const instance = axios.create({
   timeout: 5000,
 });
 
-instance.interceptors.request.use(function (config) {
-  const token = localStorage.getItem("token");
-  config.headers.authtoken = token ? `${token}` : "";
-  return config;
-});
+instance.interceptors.request.use(
+  (config) => {
+    const token = localStorage.getItem("token");
+    config.headers.authtoken = token ? `${token}` : "";
+    return config;
+  },
+  (error) => {
+    Promise.reject(error);
+  }
+);
+
+instance.interceptors.response.use(
+  (response) => {
+    return response;
+  },
+  (error) => {
+    Promise.reject(error);
+  }
+);
 
 export default instance;
 

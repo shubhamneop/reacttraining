@@ -107,6 +107,15 @@ function Navbar(props) {
             >
               Search
             </button>
+            <Link to="/admin">
+              <button
+                className="btn btn-outline-warning mr-sm-2"
+                tabIndex="-1"
+                aria-disabled="true"
+              >
+                Admin
+              </button>
+            </Link>
             {logintatstus ? (
               <>
                 <Link to="/cart">
