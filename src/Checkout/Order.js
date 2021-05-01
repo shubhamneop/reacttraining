@@ -16,7 +16,10 @@ function Order(props) {
     }
     if (props.placeOrder) {
       props.history.push("/my-orders");
-    } else if (props.cartData?.length === 0) {
+    } else if (
+      props.cartData?.length === 0 ||
+      props.cartData?.length === undefined
+    ) {
       toast.warning("Plase add product in cart", {
         position: toast.POSITION.TOP_RIGHT,
       });
@@ -74,10 +77,10 @@ function Order(props) {
 
 export default connect(function (state, props) {
   return {
-    stage: state?.stage,
-    address: state?.address,
-    cartData: state?.cart,
-    cartTotal: state?.total,
-    placeOrder: state?.placeOrder,
+    stage: state?.other?.stage,
+    address: state?.other?.address,
+    cartData: state?.other?.cart,
+    cartTotal: state?.other?.total,
+    placeOrder: state?.other?.placeOrder,
   };
 })(withRouter(Order));

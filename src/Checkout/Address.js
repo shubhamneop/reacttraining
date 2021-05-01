@@ -185,9 +185,9 @@ function Address(props) {
 
 export default connect(function (state, props) {
   return {
-    cartData: state?.cart,
-    cartTotal: state?.total,
-    stage: state?.stage,
-    address: state?.address,
+    cartData: state?.other?.cart,
+    cartTotal: state?.other?.total,
+    stage: state?.other?.stage,
+    address: state?.other?.address,
   };
 })(Address);

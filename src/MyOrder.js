@@ -4,6 +4,7 @@ import Spinner from "./UI/Spinner";
 import { getOrderInit, setOrderStatus } from "./redux/thunk/thunks";
 import Modal from "./UI/Modal";
 import { UserContext } from "./UserContext";
+import Moment from "moment";
 
 function MyOrder(props) {
   const [modal, setModal] = useState(false);
@@ -120,6 +121,7 @@ function MyOrder(props) {
                   <th className="text-center">Name</th>
                   <th className="text-center">Address</th>
                   <th className="text-center">Price</th>
+                  <th className="text-center">Date</th>
                 </tr>
               </thead>
               <tbody>
@@ -143,6 +145,10 @@ function MyOrder(props) {
                     </p>
                   </td>
                   <td className="text-center">${details?.price}</td>
+                  <td className="text-center">
+                    {details?.orderdate &&
+                      Moment(details?.orderdate).format("D MMM YYYY")}
+                  </td>
                 </tr>
               </tbody>
             </table>
@@ -197,8 +203,8 @@ function MyOrder(props) {
 
 const mapStateToProps = (state) => {
   return {
-    myOrder: state?.user_order,
-    placeOrder: state?.placeOrder,
+    myOrder: state?.other?.user_order?.reverse(),
+    placeOrder: state?.other?.placeOrder,
   };
 };
 

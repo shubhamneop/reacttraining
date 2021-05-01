@@ -146,6 +146,6 @@ function Checkout(props) {
 
 export default connect(function (state, props) {
   return {
-    stage: state?.stage,
+    stage: state?.other?.stage,
   };
 })(Checkout);

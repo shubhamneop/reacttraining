@@ -13,6 +13,7 @@ const UserProvider = (props) => {
         username: props.username,
         isLogin: props.isLogin,
         loading: props.loading,
+        loadingauth: props.loadingauth,
       }}
     >
       {props.children}
@@ -22,11 +23,12 @@ const UserProvider = (props) => {
 
 export default connect(function (state, props) {
   return {
-    token: state?.user?.token,
-    logintatstus: state?.isLogin,
-    user: state?.user,
-    username: state?.user?.name,
-    isLogin: state?.isLogin,
-    loading: state?.isFetching,
+    token: state?.auth?.user?.token,
+    logintatstus: state?.auth?.isLogin,
+    user: state?.auth?.user,
+    username: state?.auth?.user?.name,
+    isLogin: state?.auth?.isLogin,
+    loading: state?.other?.isFetching,
+    loadingauth: state?.auth?.isFetching,
   };
 })(UserProvider);

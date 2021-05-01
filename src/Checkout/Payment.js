@@ -75,8 +75,8 @@ function Payment(props) {
 
 export default connect(function (state, props) {
   return {
-    stage: state?.stage,
-    address: state?.address,
-    cartData: state?.cart,
+    stage: state?.other?.stage,
+    address: state?.other?.address,
+    cartData: state?.other?.cart,
   };
 })(withRouter(Payment));

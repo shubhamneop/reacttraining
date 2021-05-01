@@ -80,3 +80,32 @@ code {
 .navbar-light .navbar-nav .nav-link {
   color: #f8f9fa !important;
 }
+
+.cart {
+  transition: all 0.5s ease-out;
+}
+
+.card-img-top:hover {
+  position: absolute;
+  z-index: 500;
+  transform: scale(1.1);
+  border-radius: 20px;
+  box-shadow: 3px 4px #ff8100;
+  margin: auto;
+  right: 1rem;
+  left: 1rem;
+}
+
+/* td > .media-object:hover {
+  position: absolute;
+  z-index: 500;
+  transform: scale(1.1);
+  border-radius: 20px;
+  box-shadow: 3px 4px #ff8100;
+  background: grey;
+  margin: auto;
+  right: 1rem;
+  left: 1rem;
+  width: 200px !important;
+  height: 200px !important;
+} */

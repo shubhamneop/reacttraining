@@ -74,7 +74,7 @@ export const Admin = (props) => {
 
 const mapStateToProps = (state) => {
   return {
-    cakes: state?.allCakes,
+    cakes: state?.other?.allCakes,
   };
 };
 

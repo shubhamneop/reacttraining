@@ -71,8 +71,8 @@ export const CartSummery = (props) => {
 
 export default connect(function (state, props) {
   return {
-    cartData: state?.cart,
-    cartTotal: state?.total,
-    stage: state?.stage,
+    cartData: state?.other?.cart,
+    cartTotal: state?.other?.total,
+    stage: state?.other?.stage,
   };
 })(CartSummery);

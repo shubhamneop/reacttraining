@@ -1,16 +1,17 @@
-import { createStore, applyMiddleware } from "redux";
-import demo from "./reducer";
+import { createStore, applyMiddleware, combineReducers } from "redux";
+import demo from "./reducers/reducer";
 import createSaga from "redux-saga";
 import { mainSaga } from "./sagas";
 import { cakesSaga } from "./cakesaga";
 import { all } from "redux-saga/effects";
 import { cartSagas } from "./cartsagas";
 import thunk from "redux-thunk";
+import authReducer from "./reducers/authReducer";
 
 var sagaMiddleware = createSaga();
 var middleware = applyMiddleware(thunk, sagaMiddleware);
-
-let store = createStore(demo, middleware);
+const rootReducer = combineReducers({ other: demo, auth: authReducer });
+let store = createStore(rootReducer, middleware);
 
 function* rootSaga() {
   yield all([mainSaga(), cakesSaga(), cartSagas()]);

@@ -38,6 +38,6 @@ function Home(props) {
 
 export default connect(function (state, props) {
   return {
-    cakes: state?.allCakes,
+    cakes: state?.other?.allCakes,
   };
 })(Home);

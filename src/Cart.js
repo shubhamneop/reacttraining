@@ -9,6 +9,7 @@ import DeleteOutlineIcon from "@material-ui/icons/DeleteOutline";
 import { cartDataInit } from "./redux/thunk/thunks";
 import { REMOVE_CART_INIT } from "./redux/actionTypes";
 import { UserContext } from "./UserContext";
+import Transition from "react-transition-group/Transition";
 
 function Cart(props) {
   const [modal, setModal] = useState(false);
@@ -144,36 +145,49 @@ function Cart(props) {
           </div>
         )}
       </div>
-      {modal && (
-        <Modal show={modal} modalClosed={onClose}>
-          <div className="alert container" role="alert">
-            <h4 className="alert-heading" style={{ textAlign: "center" }}>
-              Are You Sure ? Want To Remove Item
-            </h4>
-            <hr />
-            <div style={{ display: "flex", justifyContent: "space-between" }}>
-              <p>
-                <button className="btn btn-danger btn-lg" onClick={onClose}>
-                  No
-                </button>
-              </p>
+      <Transition
+        in={modal}
+        mountOnEnter
+        unmountOnExit
+        timeout={{
+          enter: 400,
+          exit: 1000,
+        }}
+      >
+        {(state) => (
+          <Modal show={modal} state={state} modalClosed={onClose}>
+            <div className="alert container" role="alert">
+              <h4 className="alert-heading" style={{ textAlign: "center" }}>
+                Are You Sure ? Want To Remove Item
+              </h4>
+              <hr />
+              <div style={{ display: "flex", justifyContent: "space-between" }}>
+                <p>
+                  <button className="btn btn-danger btn-lg" onClick={onClose}>
+                    No
+                  </button>
+                </p>
 
-              <p className="mb-0">
-                <button onClick={removeCart} className="btn btn-success btn-lg">
-                  Yes
-                </button>
-              </p>
+                <p className="mb-0">
+                  <button
+                    onClick={removeCart}
+                    className="btn btn-success btn-lg"
+                  >
+                    Yes
+                  </button>
+                </p>
+              </div>
             </div>
-          </div>
-        </Modal>
-      )}
+          </Modal>
+        )}
+      </Transition>
     </div>
   );
 }
 
 export default connect(function (state, props) {
   return {
-    cartData: state?.cart,
-    cartTotal: state?.total,
+    cartData: state?.other?.cart,
+    cartTotal: state?.other?.total,
   };
 })(Cart);

@@ -9,7 +9,7 @@ function Login(props) {
   const [user, setUser] = useState();
   const { history } = props;
   const context = useContext(UserContext);
-  const { isLogin, loading } = context;
+  const { isLogin, loadingauth } = context;
 
   let getEmail = (event) => {
     setUser({ ...user, email: event.target.value });
@@ -64,7 +64,7 @@ function Login(props) {
   };
   return (
     <>
-      {loading ? (
+      {loadingauth ? (
         <Spinner />
       ) : (
         <form id="loginform" className="custom-form">
@@ -109,6 +109,6 @@ function Login(props) {
 
 export default connect(function (state, props) {
   return {
-    isError: state?.isLoginError,
+    isError: state?.auth?.isLoginError,
   };
 })(withRouter(Login));

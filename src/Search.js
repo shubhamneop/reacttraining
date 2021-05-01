@@ -43,6 +43,6 @@ function Search(props) {
 
 export default connect(function (state, props) {
   return {
-    cakes: state?.serchCakes,
+    cakes: state?.other?.serchCakes,
   };
 })(Search);

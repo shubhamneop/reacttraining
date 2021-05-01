@@ -136,6 +136,6 @@ class Signup extends React.Component {
 
 export default connect(function (state, props) {
   return {
-    loading: state?.isFetching,
+    loading: state?.auth?.isFetching,
   };
 })(Signup);

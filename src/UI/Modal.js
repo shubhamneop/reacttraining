@@ -9,14 +9,19 @@ const BackDrop = (props) => {
 };
 
 const ModalOverlay = (props) => {
+  const cssClasses = ["Modal", props.show ? "ModalOpen" : "ModalClosed"];
+  const newClasses = [
+    "Modal",
+    props.state === "entering"
+      ? "ModalOpen"
+      : props.state === "entered"
+      ? "ModalOpen"
+      : props.state === "exiting"
+      ? "ModalClosed"
+      : "ModalClosed",
+  ];
   return (
-    <div
-      className="Modal"
-      style={{
-        transform: props.show ? "translateY(0)" : "translateY(-100vh)",
-        opacity: props.show ? "1" : "0",
-      }}
-    >
+    <div className={props.state ? newClasses.join(" ") : cssClasses.join(" ")}>
       <button
         className="btn btn-lg"
         onClick={props.modalClosed}
@@ -57,6 +62,7 @@ class Modal extends Component {
           <ModalOverlay
             modalClosed={this.props.modalClosed}
             show={this.props.show}
+            state={this.props?.state}
           >
             {this.props.children}
           </ModalOverlay>,

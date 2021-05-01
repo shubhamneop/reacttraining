@@ -1,15 +1,15 @@
 import React, { useState, useEffect, useContext, useRef } from "react";
 import { Link, withRouter } from "react-router-dom";
-import { connect } from "react-redux";
+import { connect, useDispatch } from "react-redux";
 import Spinner from "../UI/Spinner";
 import { PasswordThunk } from "../redux/thunk/authThunks";
 import { UserContext } from "../UserContext";
 
 function Password(props) {
   const emailRef = useRef();
-  const { dispatch } = props;
+  const dispatch = useDispatch();
   const context = useContext(UserContext);
-  const { loading } = context;
+  const { loadingauth } = context;
   useEffect(() => {
     if (localStorage.token) {
       props.history.push("/");
@@ -51,7 +51,7 @@ function Password(props) {
   };
   return (
     <>
-      {loading ? (
+      {loadingauth ? (
         <Spinner />
       ) : (
         <form id="forgotform" className="custom-form">

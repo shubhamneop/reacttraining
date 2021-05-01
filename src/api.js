@@ -1,7 +1,7 @@
 import axios from "axios";
-
+console.log("url", process.env.REACT_APP_BASE_URL);
 const instance = axios.create({
-  baseURL: "https://apibyashu.herokuapp.com/api/",
+  baseURL: process.env.REACT_APP_BASE_URL,
   timeout: 5000,
 });
 

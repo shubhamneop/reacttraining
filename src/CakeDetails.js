@@ -140,7 +140,7 @@ function CakeDetails(props) {
 
 export default connect(function (state, props) {
   return {
-    cakedata: state?.cakeData,
-    addtoCart: state?.addToCart,
+    cakedata: state?.other?.cakeData,
+    addtoCart: state?.other?.addToCart,
   };
 })(CakeDetails);

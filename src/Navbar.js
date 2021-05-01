@@ -162,7 +162,7 @@ function Navbar(props) {
 
 const mapStateToProps = (state) => {
   return {
-    cart: state?.cart,
+    cart: state?.other?.cart,
   };
 };
 const mapDispatchToProps = (dispatch) => {
