@@ -1,97 +1,91 @@
-import logo from "./logo.svg";
 import "./App.css";
 import Home from "./Home";
 import Navbar from "./Navbar";
-import Carousel from "./Carousel";
-import Signup from "./Signup";
-import Login from "./Login";
-import { useState, useEffect } from "react";
+import Signup from "./Forms/Signup";
+import Login from "./Forms/Login";
+import React, { useEffect, Suspense } from "react";
 import Search from "./Search";
-import axios from "axios";
 import {
   BrowserRouter as Router,
   Switch,
   Route,
-  Link,
   Redirect,
 } from "react-router-dom";
 import CakeDetails from "./CakeDetails";
 import { connect } from "react-redux";
 import Cart from "./Cart";
-import Checkout from "./Checkout";
-import Password from "./Password";
+import Checkout from "./Checkout/Checkout";
+import { ToastContainer } from "react-toastify";
+import MyOrder from "./MyOrder";
+import { cartDataInit, getAllCakeInit } from "./redux/thunk/thunks";
+import { InitUser } from "./redux/thunk/authThunks";
+import ErrorBoundary from "./ErrorBoundary";
+import UserProvider from "./UserContext";
+import Spinner from "./UI/Spinner";
+import Transitions from "./Transitions";
+
+const SuspenceAdmin = React.lazy(() => import("./Admin"));
+const Password = React.lazy(() => import("./Forms/Password"));
 
 function App(props) {
   useEffect(() => {
-    document.title = `Cake Shop | ${props.user?.name || "App"}`;
-    var token = localStorage.token;
-
+    var title = "Shubham`s";
+    document.title = `${title} Cake Shop  | ${props.user?.name || "App"}`;
+    props.dispatch(getAllCakeInit());
     if (localStorage.token && !props.user) {
-      let getuserapi = "https://apibyashu.herokuapp.com/api/getuserdetails";
-      axios({
-        url: getuserapi,
-        method: "get",
-        headers: {
-          authtoken: token,
-        },
-      })
-        .then((response) => {
-          console.log("get user response", response.data);
-          props.dispatch({ type: "INIT_USER", payload: response.data.data });
-        })
-        .catch((error) => console.log(error));
+      props.dispatch(InitUser());
     }
 
-    let detailsapiurl = "https://apibyashu.herokuapp.com/api/cakecart";
-    axios({
-      url: detailsapiurl,
-      method: "post",
-      data: {},
-      headers: {
-        authtoken: token,
-      },
-    })
-      .then((response) => {
-        var total = 0;
-        response.data.data.map(({ price }) => {
-          total = total + price;
-        });
-        props.dispatch({
-          type: "CART_DATA",
-          payload: response.data.data,
-          total: total,
-        });
-      })
-      .catch((error) => console.log(error));
-  }, [props.token]);
+    if (props.token) {
+      props.dispatch(cartDataInit());
+    }
+  }, [props.token, props]);
 
   return (
-    <Router>
-      <Navbar />
-      <Switch>
-        <Route path="/login" exact>
-          <Login />
-        </Route>
+    <>
+      <ToastContainer />
+      <ErrorBoundary>
+        <UserProvider>
+          <Router>
+            <Navbar />
+            <Switch>
+              <Route path="/login" exact>
+                <Login />
+              </Route>
 
-        <Route path="/signup" exact component={Signup} />
+              <Route path="/signup" exact component={Signup} />
 
-        <Route path="/" exact component={Home} />
-        <Route path="/search" exact component={Search} />
-        <Route path="/cake/:cakeid" exact component={CakeDetails} />
-        <Route path="/cart" exact component={Cart} />
-        <Route path="/checkout" component={Checkout} />
-        <Route path="/forgot-password" exact component={Password} />
-        <Route path="/*">
-          <Redirect to="/" />
-        </Route>
-      </Switch>
-    </Router>
+              <Route path="/" exact component={Home} />
+              <Route path="/search" exact component={Search} />
+              <Route path="/cake/:cakeid" exact component={CakeDetails} />
+              <Route path="/cart" exact component={Cart} />
+              <Route path="/checkout" component={Checkout} />
+              <Route path="/forgot-password" exact>
+                <Suspense fallback={<Spinner />}>
+                  <Password />
+                </Suspense>
+              </Route>
+              <Route path="/my-orders" exact component={MyOrder} />
+              <Route path="/test" exact component={Transitions} />
+              <Route path="/admin" exact>
+                <Suspense fallback={<Spinner />}>
+                  <SuspenceAdmin />
+                </Suspense>
+              </Route>
+              <Route path="/*">
+                <Redirect to="/" />
+              </Route>
+            </Switch>
+          </Router>
+        </UserProvider>
+      </ErrorBoundary>
+    </>
   );
 }
 
 export default connect(function (state, props) {
   return {
-    user: state?.user,
-    token: state?.user?.token,
+    user: state?.auth?.user,
+    token: state?.auth?.user?.token,
   };
 })(App);

@@ -1,29 +1,18 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useContext } from "react";
 import Carousel from "./Carousel";
 import Cake from "./Cake";
-import axios from "axios";
 import Spinner from "./UI/Spinner";
+import { connect } from "react-redux";
+import { getAllCakeInit } from "./redux/thunk/thunks";
+import { UserContext } from "./UserContext";
 
-function Home() {
-  const [cakes, setCakes] = useState([]);
-  const [loading, setLoading] = useState(false);
+function Home(props) {
+  const { dispatch, cakes } = props;
+  const context = useContext(UserContext);
+  const { loading } = context;
   useEffect(() => {
-    setLoading(true);
-    let apiurl = "https://apibyashu.herokuapp.com/api/allCakes";
-    axios({
-      url: apiurl,
-      method: "get",
-    })
-      .then((response) => {
-        console.log("all cake", response.data.data);
-        setCakes(response.data.data);
-        setLoading(false);
-      })
-      .catch((error) => {
-        console.log(error);
-        setLoading(false);
-      });
-  }, []);
+    dispatch(getAllCakeInit());
+  }, [dispatch]);
 
   return (
     <>
@@ -47,4 +36,8 @@ function Home() {
   );
 }
 
-export default Home;
+export default connect(function (state, props) {
+  return {
+    cakes: state?.other?.allCakes,
+  };
+})(Home);

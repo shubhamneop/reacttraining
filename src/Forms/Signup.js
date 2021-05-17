@@ -1,7 +1,8 @@
 import React from "react";
-import axios from "axios";
-import Spinner from "./UI/Spinner";
+import Spinner from "../UI/Spinner";
 import { Link } from "react-router-dom";
+import { connect } from "react-redux";
+import { SignupThunk } from "../redux/thunk/authThunks";
 
 class Signup extends React.Component {
   constructor() {
@@ -19,7 +20,6 @@ class Signup extends React.Component {
     // alert("in construction");
   }
   user = {};
-
   goOnline = () => {
     this.setState({ onlineuser: this.state.onlineuser + 1 });
   };
@@ -58,6 +58,7 @@ class Signup extends React.Component {
       return false;
     }
   };
+
   submit = (event) => {
     event.preventDefault();
     var form = document.getElementById("signupform");
@@ -66,28 +67,16 @@ class Signup extends React.Component {
     if (errors) {
       this.setState({ errorMessage: errors });
     } else {
-      this.setState({ loading: true });
-      let apiurl = "https://apibyashu.herokuapp.com/api/register";
-      axios({
-        url: apiurl,
-        method: "post",
-        data: this.user,
-      })
-        .then((response) => {
-          this.setState({ loading: false });
-          console.log("register", response.data);
-        })
-        .catch((error) => {
-          this.setState({ loading: false });
-          console.log(error);
-        });
+      this.props.dispatch(SignupThunk(this.user));
     }
-    console.log("user", this.user);
   };
+
   render() {
+    const { loading } = this.props;
+
     return (
       <>
-        {this.state.loading ? (
+        {loading ? (
           <Spinner />
         ) : (
           <form id="signupform" className="custom-form">
@@ -145,4 +134,8 @@ class Signup extends React.Component {
   }
 }
 
-export default Signup;
+export default connect(function (state, props) {
+  return {
+    loading: state?.auth?.isFetching,
+  };
+})(Signup);

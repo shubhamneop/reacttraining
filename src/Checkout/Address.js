@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { CartSummery } from "./CartSummery";
 import { connect } from "react-redux";
+import { toast } from "react-toastify";
+import { setCheckoutStage, addAddress } from "../redux/thunk/thunks";
 
 function Address(props) {
   let [address, setAddress] = useState({
@@ -14,18 +16,29 @@ function Address(props) {
     if (props.stage === 1) {
       props.history.push("/checkout");
     }
-    setAddress(props.address);
-  }, []);
+    if (props.cartData?.length === 0) {
+      toast.warning("Plase add product in cart", {
+        position: toast.POSITION.TOP_RIGHT,
+      });
+      props.history.push("/checkout");
+    }
+    if (props.address?.name) {
+      setAddress(props.address);
+    }
+  }, [props.stage, props.address, props.cartData?.length, props.history]);
   const [errorMessage, seterrorMessage] = useState({});
   const validate = (elements) => {
     var errors = {};
+    const pattern = /^[0-9]+$/;
 
     if (!elements.name.value) {
       errors.name = "Plaese fill name";
     }
     if (!elements.phone.value) {
       errors.phone = "Plaese fill phone";
-    } else if (elements.phone.value.length != 10) {
+    } else if (!pattern.test(elements.phone.value)) {
+      errors.phone = "Characters not allowed";
+    } else if (elements.phone.value.length !== 10) {
       errors.phone = "Plaese enter 10 digit phone no";
     }
     if (!elements.address.value) {
@@ -38,7 +51,9 @@ function Address(props) {
     }
     if (!elements.pincode.value) {
       errors.pincode = "Plaese fill pincode";
-    } else if (elements.pincode.value.length != 6) {
+    } else if (!pattern.test(elements.pincode.value)) {
+      errors.pincode = "Characters not allowed";
+    } else if (elements.pincode.value.length !== 6) {
       errors.pincode = "Plaese enter 6 digit pincode";
     }
     var errorKeys = Object.keys(errors);
@@ -57,12 +72,9 @@ function Address(props) {
       seterrorMessage(errors);
     } else {
       seterrorMessage({});
-      props.dispatch({ type: "ADD_ADDRESS", payload: address });
+      props.dispatch(addAddress(address));
       if (props.stage !== 4) {
-        props.dispatch({
-          type: "CHECKOUT_STAGE",
-          payload: 3,
-        });
+        props.dispatch(setCheckoutStage(3));
       }
       props.history.push("/checkout/payment");
     }
@@ -173,9 +185,9 @@ function Address(props) {
 
 export default connect(function (state, props) {
   return {
-    cartData: state?.cart,
-    cartTotal: state?.total,
-    stage: state?.stage,
-    address: state?.address,
+    cartData: state?.other?.cart,
+    cartTotal: state?.other?.total,
+    stage: state?.other?.stage,
+    address: state?.other?.address,
   };
 })(Address);

@@ -1,20 +1,20 @@
-import React, { useState, useEffect } from "react";
-import axios from "axios";
+import React, { useState, useEffect, useContext, useRef } from "react";
 import { Link, withRouter } from "react-router-dom";
-import { connect } from "react-redux";
-import Spinner from "./UI/Spinner";
+import { connect, useDispatch } from "react-redux";
+import Spinner from "../UI/Spinner";
+import { PasswordThunk } from "../redux/thunk/authThunks";
+import { UserContext } from "../UserContext";
 
 function Password(props) {
-  ///recoverpassword post {email:""}
-
-  const [email, setEmail] = useState("");
-  const [loading, setLoading] = useState(false);
-
+  const emailRef = useRef();
+  const dispatch = useDispatch();
+  const context = useContext(UserContext);
+  const { loadingauth } = context;
   useEffect(() => {
     if (localStorage.token) {
       props.history.push("/");
     }
-  }, []);
+  }, [props.history]);
 
   const [errorMessage, seterrorMessage] = useState({});
   const validate = (elements) => {
@@ -46,29 +46,12 @@ function Password(props) {
       seterrorMessage(errors);
     } else {
       seterrorMessage({});
-      setLoading(true);
-      let apiurl = "https://apibyashu.herokuapp.com/api/recoverpassword";
-      axios({
-        url: apiurl,
-        method: "post",
-        data: email,
-      })
-        .then((response) => {
-          console.log("forgot password response.. ", response.data);
-          if (response.data.errorMessage) {
-            alert(response.data.errorMessage);
-          }
-          setLoading(false);
-        })
-        .catch((error) => {
-          setLoading(false);
-          console.log(error);
-        });
+      dispatch(PasswordThunk({ email: emailRef.current.value }));
     }
   };
   return (
     <>
-      {loading ? (
+      {loadingauth ? (
         <Spinner />
       ) : (
         <form id="forgotform" className="custom-form">
@@ -79,8 +62,7 @@ function Password(props) {
               type="email"
               name="email"
               className="form-control"
-              value={email}
-              onChange={(event) => setEmail(event.target.value)}
+              ref={emailRef}
             />
             <span style={{ color: "red" }}>{errorMessage?.email}</span>
           </div>

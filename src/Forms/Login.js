@@ -1,14 +1,15 @@
-import React, { useState, useEffect } from "react";
-import axios from "axios";
+import React, { useState, useEffect, useContext } from "react";
 import { Link, withRouter } from "react-router-dom";
 import { connect } from "react-redux";
-import Spinner from "./UI/Spinner";
+import Spinner from "../UI/Spinner";
+import { LoginThunk } from "../redux/thunk/authThunks";
+import { UserContext } from "../UserContext";
 
 function Login(props) {
-  ///recoverpassword post {email:""}
-
   const [user, setUser] = useState();
-  const [loading, setLoading] = useState(false);
+  const { history } = props;
+  const context = useContext(UserContext);
+  const { isLogin, loadingauth } = context;
 
   let getEmail = (event) => {
     setUser({ ...user, email: event.target.value });
@@ -18,9 +19,12 @@ function Login(props) {
   };
   useEffect(() => {
     if (localStorage.token) {
-      props.history.push("/");
+      history.push("/");
     }
-  }, []);
+    if (isLogin) {
+      history.push("/");
+    }
+  }, [isLogin, history]);
 
   const [errorMessage, seterrorMessage] = useState({});
   const validate = (elements) => {
@@ -34,7 +38,6 @@ function Login(props) {
       if (!isValid) {
         errors.email = "Plaese enter valid email";
       }
-      console.log(isValid);
     }
     if (!elements.password.value) {
       errors.password = "Plaese enter password";
@@ -56,37 +59,12 @@ function Login(props) {
       seterrorMessage(errors);
     } else {
       seterrorMessage({});
-      setLoading(true);
-      let apiurl = "https://apibyashu.herokuapp.com/api/login";
-      axios({
-        url: apiurl,
-        method: "post",
-        data: user,
-      })
-        .then((response) => {
-          console.log("login success", response.data);
-          if (response.data.token) {
-            localStorage.token = response.data.token;
-            props.dispatch({
-              type: "LOGIN",
-              payload: response.data,
-            });
-            setLoading(false);
-            props.history.push("/");
-          } else {
-            alert("Invalid Credentional");
-            setLoading(false);
-          }
-        })
-        .catch((error) => {
-          setLoading(false);
-          console.log(error);
-        });
+      props.dispatch(LoginThunk(user));
     }
   };
   return (
     <>
-      {loading ? (
+      {loadingauth ? (
         <Spinner />
       ) : (
         <form id="loginform" className="custom-form">
@@ -129,4 +107,8 @@ function Login(props) {
   );
 }
 
-export default connect()(withRouter(Login));
+export default connect(function (state, props) {
+  return {
+    isError: state?.auth?.isLoginError,
+  };
+})(withRouter(Login));

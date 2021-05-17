@@ -1,32 +1,23 @@
-import React, { useEffect, useState } from "react";
-import axios from "axios";
+import React, { useEffect, useContext } from "react";
 import Cake from "./Cake";
 import Carousel from "./Carousel";
 import Spinner from "./UI/Spinner";
+import { connect } from "react-redux";
+import { SEARCH_CAKE_INIT } from "./redux/actionTypes";
+import { UserContext } from "./UserContext";
 
 function Search(props) {
-  const [cakes, setCakes] = useState([]);
-  const [loading, setLoading] = useState(false);
+  const { dispatch, cakes } = props;
+  const context = useContext(UserContext);
+  const { loading } = context;
   const query = new URLSearchParams(props.location.search);
   const token = query.get("q");
-
   useEffect(() => {
-    setLoading(true);
-    let searchCakeApi = `https://apibyashu.herokuapp.com/api/searchcakes?q=${token}`;
-    axios({
-      url: searchCakeApi,
-      method: "get",
-    })
-      .then((response) => {
-        console.log("search result", response.data.data);
-        setCakes(response.data.data);
-        setLoading(false);
-      })
-      .catch((error) => {
-        console.log(error);
-        setLoading(false);
-      });
-  }, [props.location.search, token]);
+    dispatch({
+      type: SEARCH_CAKE_INIT,
+      payload: token,
+    });
+  }, [props.location.search, token, dispatch]);
 
   return (
     <>
@@ -50,4 +41,8 @@ function Search(props) {
   );
 }
 
-export default Search;
+export default connect(function (state, props) {
+  return {
+    cakes: state?.other?.serchCakes,
+  };
+})(Search);

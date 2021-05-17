@@ -1,12 +1,16 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import { Link, withRouter } from "react-router-dom";
 import PermIdentityIcon from "@material-ui/icons/PermIdentity";
 import { connect } from "react-redux";
 import ShoppingCartIcon from "@material-ui/icons/ShoppingCart";
+import { toast } from "react-toastify";
+import { LogoutAsync } from "./redux/thunk/authThunks";
+import { UserContext } from "./UserContext";
 
 function Navbar(props) {
   const [searchData, setSearchData] = useState("");
-
+  const context = useContext(UserContext);
+  const { logintatstus, username } = context;
   const serach = (event) => {
     event.preventDefault();
     props.history.push(`/search?q=${searchData}`);
@@ -21,7 +25,10 @@ function Navbar(props) {
 
   const makeLogout = (event) => {
     event.preventDefault();
-    props.dispatch({ type: "LOGOUT" });
+    props.onLogout();
+    toast.success(`Logout Successfully !`, {
+      position: toast.POSITION.TOP_RIGHT,
+    });
     props.history.push("/");
   };
 
@@ -30,7 +37,7 @@ function Navbar(props) {
       <nav className="navbar navbar-expand-lg navbar-light  navbar-color">
         <Link to="/">
           {" "}
-          <a className="navbar-brand">Cake`s Shop</a>
+          <span className="navbar-brand">Cake`s Shop</span>
         </Link>
         <button
           className="navbar-toggler"
@@ -72,9 +79,9 @@ function Navbar(props) {
               </div>
             </li> */}
             <li className="nav-item">
-              <a className="nav-link" tabindex="-1" aria-disabled="true">
-                {props.username && <PermIdentityIcon />} {props.username || ""}
-              </a>
+              <span className="nav-link" aria-disabled="true">
+                {username && <PermIdentityIcon />} {username || ""}
+              </span>
             </li>
           </ul>
           <div className="form-inline my-2 my-lg-0">
@@ -100,16 +107,34 @@ function Navbar(props) {
             >
               Search
             </button>
-            {props.logintatstus ? (
+            <Link to="/admin">
+              <button
+                className="btn btn-outline-warning mr-sm-2"
+                tabIndex="-1"
+                aria-disabled="true"
+              >
+                Admin
+              </button>
+            </Link>
+            {logintatstus ? (
               <>
                 <Link to="/cart">
-                  {" "}
                   <button
                     className="btn btn-outline-warning mr-sm-2"
-                    tabindex="-1"
+                    tabIndex="-1"
                     aria-disabled="true"
                   >
-                    <ShoppingCartIcon /> {props.cart?.length}
+                    <ShoppingCartIcon />
+                    {props.cart?.length > 0 && props.cart?.length}
+                  </button>
+                </Link>
+                <Link to="/my-orders">
+                  <button
+                    className="btn btn-outline-info mr-sm-2"
+                    tabIndex="-1"
+                    aria-disabled="true"
+                  >
+                    My Orders
                   </button>
                 </Link>
 
@@ -135,10 +160,14 @@ function Navbar(props) {
   );
 }
 
-export default connect(function (state, props) {
+const mapStateToProps = (state) => {
   return {
-    username: state?.user?.name,
-    logintatstus: state?.isLogin,
-    cart: state?.cart,
+    cart: state?.other?.cart,
   };
-})(withRouter(Navbar));
+};
+const mapDispatchToProps = (dispatch) => {
+  return {
+    onLogout: () => dispatch(LogoutAsync()),
+  };
+};
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Navbar));

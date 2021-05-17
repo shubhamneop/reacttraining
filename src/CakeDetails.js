@@ -1,71 +1,54 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useContext } from "react";
 import { useParams } from "react-router";
-import axios from "axios";
 import StarOutlineIcon from "@material-ui/icons/StarOutline";
 import RateReviewIcon from "@material-ui/icons/RateReview";
 import FavoriteIcon from "@material-ui/icons/Favorite";
 import { connect } from "react-redux";
 import Spinner from "./UI/Spinner";
+import { toast } from "react-toastify";
+import { GET_CAKE_INIT, ADD_CART_INIT } from "./redux/actionTypes";
+import { UserContext } from "./UserContext";
 var cake = "/product17.jpg";
 
 function CakeDetails(props) {
   let params = useParams();
-  console.log(params.cakeid);
-  const [cakedata, setCakes] = useState();
-  const [loading, setLoading] = useState(false);
+  const { history, dispatch, cakedata, addtoCart } = props;
+  const context = useContext(UserContext);
+  const { loading, token } = context;
   useEffect(() => {
-    setLoading(true);
-    let detailsapiurl =
-      "https://apibyashu.herokuapp.com/api/cake/" + params.cakeid;
-    axios({
-      url: detailsapiurl,
-      method: "get",
-    })
-      .then((response) => {
-        console.log("all cake", response.data.data);
-        setCakes(response.data.data);
-        setLoading(false);
-      })
-      .catch((error) => {
-        console.log(error);
-        setLoading(false);
-      });
-  }, []);
+    dispatch({
+      type: GET_CAKE_INIT,
+      payload: params.cakeid,
+    });
+  }, [params.cakeid, dispatch]);
+
+  useEffect(() => {
+    if (addtoCart) {
+      history.push("/cart");
+    }
+  }, [history, addtoCart]);
 
   const addToCart = () => {
-    setLoading(true);
-    if (!props?.token) {
-      alert("Please Login !");
-      setLoading(false);
-      return false;
-    }
-    let detailsapiurl = "https://apibyashu.herokuapp.com/api/addcaketocart";
-    axios({
-      url: detailsapiurl,
-      method: "post",
-      data: {
-        cakeid: cakedata.cakeid,
-        name: cakedata.name,
-        image: cakedata.image,
-        price: cakedata.price,
-        weight: cakedata.weight,
-      },
-      headers: {
-        authtoken: props.token,
-      },
-    })
-      .then((response) => {
-        props.dispatch({
-          type: "ADD_CART",
-          payload: response.data.data,
-        });
-        props.history.push("/cart");
-        setLoading(false);
-      })
-      .catch((error) => {
-        setLoading(false);
-        console.log(error);
+    if (!token) {
+      toast.error("Please Login !", {
+        position: toast.POSITION.TOP_RIGHT,
       });
+
+      //alert("Please Login !");
+      return false;
+    } else {
+      dispatch({
+        type: ADD_CART_INIT,
+        payload: {
+          cakeid: cakedata.cakeid,
+          name: cakedata.name,
+          image: cakedata.image,
+          price: cakedata.price,
+          weight: cakedata.weight,
+        },
+        history: history,
+      });
+    }
   };
   return (
     <div>
@@ -85,6 +68,7 @@ function CakeDetails(props) {
             <img
               style={{ height: "600px", maxWidth: "500px" }}
               src={cakedata?.image || cake}
+              alt="..."
             />
             <br></br>
             {cakedata?.ingredients.length > 0 && (
@@ -92,7 +76,7 @@ function CakeDetails(props) {
                 INGREDIETS:{" "}
                 {cakedata?.ingredients.length > 0 &&
                   cakedata?.ingredients.map((ingredient, index) => {
-                    return <lable key={index}>{ingredient}, </lable>;
+                    return <label key={index}>{ingredient}, </label>;
                   })}
               </h4>
             )}
@@ -133,15 +117,17 @@ function CakeDetails(props) {
 
             <br></br>
             <div style={{ display: "flex" }}>
-              <button
-                onClick={addToCart}
-                type="button"
-                class="btn btn-warning btn-lg"
-              >
-                Add To Cart!
-              </button>
+              {cakedata?.cakeid && (
+                <button
+                  onClick={addToCart}
+                  type="button"
+                  className="btn btn-warning btn-lg"
+                >
+                  Add To Cart!
+                </button>
+              )}
               <div style={{ padding: "10px" }} />
-              <button type="button" class="btn btn-outline-light btn-lg">
+              <button type="button" className="btn btn-outline-light btn-lg">
                 <FavoriteIcon style={{ color: "red" }} />
               </button>
             </div>
@@ -154,6 +140,7 @@ function CakeDetails(props) {
 
 export default connect(function (state, props) {
   return {
-    token: state?.user?.token,
+    cakedata: state?.other?.cakeData,
+    addtoCart: state?.other?.addToCart,
   };
 })(CakeDetails);

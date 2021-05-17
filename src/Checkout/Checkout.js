@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useContext } from "react";
 import { Route } from "react-router";
 import Address from "./Address";
 import Payment from "./Payment";
@@ -6,6 +6,7 @@ import Order from "./Order";
 import CartSummery from "./CartSummery";
 import { Link, useRouteMatch } from "react-router-dom";
 import { connect } from "react-redux";
+import { UserContext } from "../UserContext";
 
 function Checkout(props) {
   let route = useRouteMatch();
@@ -13,11 +14,13 @@ function Checkout(props) {
   var url = route.url;
   var path = route.path;
   var currentpath = props.location.pathname;
+  const context = useContext(UserContext);
+  const { token } = context;
   useEffect(() => {
-    if (!props.token) {
+    if (!localStorage.token) {
       props.history.push("/");
     }
-  }, [props.token]);
+  }, [token, props.history]);
   return (
     <>
       <h1
@@ -35,7 +38,7 @@ function Checkout(props) {
       <div className="row" style={{ padding: "20px" }}>
         <div className="col-md-4">
           <div
-            class="nav flex-column nav-pills"
+            className="nav flex-column nav-pills"
             id="v-pills-tab"
             role="tablist"
             aria-orientation="vertical"
@@ -143,7 +146,6 @@ function Checkout(props) {
 
 export default connect(function (state, props) {
   return {
-    token: state?.user?.token,
-    stage: state?.stage,
+    stage: state?.other?.stage,
   };
 })(Checkout);
