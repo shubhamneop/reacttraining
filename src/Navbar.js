@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import { Link, withRouter } from "react-router-dom";
 import PermIdentityIcon from "@material-ui/icons/PermIdentity";
 import { connect } from "react-redux";
@@ -7,6 +7,11 @@ import { toast } from "react-toastify";
 import { LogoutAsync } from "./redux/thunk/authThunks";
 import { UserContext } from "./UserContext";
 
+let useX = () => {
+  useEffect(() => {
+    alert("hooks");
+  }, []);
+};
 function Navbar(props) {
   const [searchData, setSearchData] = useState("");
   const context = useContext(UserContext);
@@ -15,7 +20,7 @@ function Navbar(props) {
     event.preventDefault();
     props.history.push(`/search?q=${searchData}`);
   };
-
+  //useX();
   const enterPressed = (event) => {
     var code = event.keyCode || event.which;
     if (code === 13) {

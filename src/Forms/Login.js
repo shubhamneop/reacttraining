@@ -6,7 +6,7 @@ import { LoginThunk } from "../redux/thunk/authThunks";
 import { UserContext } from "../UserContext";
 
 function Login(props) {
-  const [user, setUser] = useState();
+  const [user, setUser] = useState({});
   const { history } = props;
   const context = useContext(UserContext);
   const { isLogin, loadingauth } = context;
@@ -25,6 +25,27 @@ function Login(props) {
       history.push("/");
     }
   }, [isLogin, history]);
+
+  useEffect(() => {
+    const identifier = setTimeout(() => {
+      var errors = {};
+      const pattern = /[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/;
+      if (!user.email) {
+        errors.email = "Plaese enter email";
+      } else if (!pattern.test(user.email)) {
+        errors.email = "Plaese enter valid email";
+      }
+      if (!user.password) {
+        errors.password = "Plaese enter password";
+      }
+      if (errors) {
+        seterrorMessage(errors);
+      }
+    }, 500);
+    return () => {
+      clearTimeout(identifier);
+    };
+  }, [user]);
 
   const [errorMessage, seterrorMessage] = useState({});
   const validate = (elements) => {

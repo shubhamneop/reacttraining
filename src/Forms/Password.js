@@ -1,4 +1,10 @@
-import React, { useState, useEffect, useContext, useRef } from "react";
+import React, {
+  useState,
+  useEffect,
+  useContext,
+  useRef,
+  useReducer,
+} from "react";
 import { Link, withRouter } from "react-router-dom";
 import { connect, useDispatch } from "react-redux";
 import Spinner from "../UI/Spinner";
@@ -15,6 +21,32 @@ function Password(props) {
       props.history.push("/");
     }
   }, [props.history]);
+  const pattern = /[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/;
+
+  const emailReducer = (state, action) => {
+    if (action.type === "EMAIL_CHECK") {
+      return { value: action.val, isValid: pattern.test(action.val) };
+    }
+    if (action.type === "EMAIL_BLUR") {
+      return { value: state.value, isValid: pattern.test(state.value) };
+    }
+    return { value: "", isValid: false };
+  };
+  const [emailState, dispatchEmail] = useReducer(emailReducer, {
+    value: "",
+    isValid: null,
+  });
+
+  const emailHandler = (event) => {
+    dispatchEmail({
+      type: "EMAIL_CHECK",
+      val: event.target.value,
+    });
+  };
+
+  const emailBlur = () => {
+    dispatchEmail({ type: "EMAIL_BLUR" });
+  };
 
   const [errorMessage, seterrorMessage] = useState({});
   const validate = (elements) => {
@@ -23,7 +55,6 @@ function Password(props) {
     if (!elements.email.value) {
       errors.email = "Plaese enter email";
     } else if (elements.email.value) {
-      const pattern = /[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/;
       var isValid = pattern.test(elements.email.value);
       if (!isValid) {
         errors.email = "Plaese enter valid email";
@@ -44,6 +75,7 @@ function Password(props) {
 
     if (errors) {
       seterrorMessage(errors);
+      emailRef.current.focus();
     } else {
       seterrorMessage({});
       dispatch(PasswordThunk({ email: emailRef.current.value }));
@@ -63,6 +95,9 @@ function Password(props) {
               name="email"
               className="form-control"
               ref={emailRef}
+              onChange={emailHandler}
+              onBlur={emailBlur}
+              style={{ borderColor: emailState.isValid === false && "red" }}
             />
             <span style={{ color: "red" }}>{errorMessage?.email}</span>
           </div>

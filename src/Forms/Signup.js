@@ -3,6 +3,7 @@ import Spinner from "../UI/Spinner";
 import { Link } from "react-router-dom";
 import { connect } from "react-redux";
 import { SignupThunk } from "../redux/thunk/authThunks";
+import { UserContext } from "../UserContext";
 
 class Signup extends React.Component {
   constructor() {
@@ -19,6 +20,7 @@ class Signup extends React.Component {
     };
     // alert("in construction");
   }
+  static contextType = UserContext;
   user = {};
   goOnline = () => {
     this.setState({ onlineuser: this.state.onlineuser + 1 });
@@ -73,7 +75,7 @@ class Signup extends React.Component {
 
   render() {
     const { loading } = this.props;
-
+    console.log(this.props, this.context);
     return (
       <>
         {loading ? (
